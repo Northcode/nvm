@@ -40,6 +40,13 @@ namespace nvm
             data[address] = value;
         }
 
+        public void Write(uint address, ushort value)
+        {
+            byte[] convertedValues = BitConverter.GetBytes(value);
+            data[address + 0] = convertedValues[0];
+            data[address + 1] = convertedValues[1];
+        }
+
         public void Write(uint address, int value)
         {
             byte[] convertedValues = value.ToBytes();
@@ -79,6 +86,11 @@ namespace nvm
         public byte Read(uint address)
         {
             return data[address];
+        }
+
+        internal ushort ReadUInt16(uint p)
+        {
+            return BitConverter.ToUInt16(new byte[] { data[p] , data[p + 1] },0);
         }
 
         public int ReadInt(uint address)

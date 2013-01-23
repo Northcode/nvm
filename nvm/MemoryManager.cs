@@ -17,19 +17,22 @@ namespace nvm
         Buffer memory;
         IClassContainer classcontainer;
 
-        uint codeAddr;
-        uint staticAddr;
-        uint heapAddr;
+        internal uint codeAddr;
+        internal uint staticAddr;
+        internal uint heapAddr;
+        internal uint stackAddr;
 
         uint allocAddr;
+        uint stackPointer;
 
         int maxStaticVars;
 
-        public MemoryManager(VirtualMachine Machine, uint codeAddr, uint staticAddr, uint heapAddr)
+        public MemoryManager(VirtualMachine Machine, uint codeAddr, uint stackAddr, uint staticAddr, uint heapAddr)
         {
             classcontainer = Machine;
             memory = Machine.memory;
             this.codeAddr = codeAddr;
+            this.stackAddr = stackAddr;
             this.staticAddr = staticAddr;
             this.heapAddr = heapAddr;
             this.allocAddr = 0;
@@ -176,6 +179,74 @@ namespace nvm
                     memory.Write((uint)(addr + 1 + i), (byte)0); //Clears every byte string used
                 }
             }
+        }
+
+        public void Push(byte val)
+        {
+            if (stackPointer + 1 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer++;
+        }
+
+        public void Push(ushort val)
+        {
+            if (stackPointer + 2 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer += 2;
+        }
+
+        public void Push(uint val)
+        {
+            if (stackPointer + 4 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer += 4;
+        }
+
+        public void Push(int val)
+        {
+            if (stackPointer + 4 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer += 4;
+        }
+
+        public void Push(float val)
+        {
+            if (stackPointer + 4 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer += 4;
+        }
+
+        public void Push(string val)
+        {
+            if (stackPointer + val.Length + 1 + 4 > staticAddr)
+            {
+                throw new StackOverflowException("Cannot push any more items onto the stack!");
+            }
+            memory.Write(stackPointer, val);
+            stackPointer += (uint)val.Length;
+            memory.Write(stackPointer, (uint)val.Length);
+            stackPointer += 4;
+        }
+
+        public byte Pop()
+        {
+            stackPointer--;
+            return memory.Read(stackPointer);
         }
     }
 }

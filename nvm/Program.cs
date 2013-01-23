@@ -10,34 +10,27 @@ namespace nvm
     {
         public static void Main(string[] args)
         {
+            VirtualMachine.InitOpCodes();
             VirtualMachine vm = new VirtualMachine();
             Buffer mem = new Buffer(512);
             vm.memory = mem;
-            MemoryManager mm = new MemoryManager(vm, 0, 1, 30);
+            MemoryManager mm = new MemoryManager(vm, 0, 1, 1, 30);
             vm.manager = mm;
-            Class c = new Class() { name = "Test",  fields = new Field[] { new Field() { name = "A", type = MemoryManager.TYPE_4BYTE, newobj = 0 }, new Field() { name = "B", type = MemoryManager.TYPE_STRING, newobj = "HELLO WORLD!" } } , parent = vm };
 
-            vm.classes = new Class[] { c };
+            CodeBuilder cb = new CodeBuilder(512);
+            cb.WriteBytes(VirtualMachine.codes[2].GetByteCode(), (byte)2);
+            cb.WriteBytes(VirtualMachine.codes[3].GetByteCode(), (byte)3);
+            cb.WriteBytes(VirtualMachine.codes[0x10].GetByteCode(), (byte)0x23);
+            cb.WriteBytes(VirtualMachine.codes[0x11].GetByteCode());
 
-            mm.StorePtr(0, mm.Alloc("TEST THIS"));
-            mm.StorePtr(1, mm.Alloc(24));
-            mm.StorePtr(2, mm.LoadPtr(1));
+            mem = new Buffer(512) { data = cb.GetCode() };
+            vm.memory = mem;
+            mm = new MemoryManager(vm, 0, 20, 50, 100);
+            vm.manager = mm;
 
-            Instance i = new Instance() { parent = c };
+            vm.Run();
 
-            mm.StorePtr(3, mm.Alloc(i));
-
-            mem.Write(i.GetField(0).Item2 + 1, 12);
-
-            uint adr = i.GetField(0).Item2;
-            int a = mem.ReadInt(adr);
-
-            Tuple<byte, uint> strfld = i.GetField(1);
-            mm.Free(strfld.Item2,strfld.Item1);
-
-            i.StoreField(1, mm.Alloc("Hello test"));
-
-            Console.WriteLine(mem.ReadString(i.GetField(1).Item2 + 1));
+            vm.RegDump();
 
             Console.ReadKey();
         }
