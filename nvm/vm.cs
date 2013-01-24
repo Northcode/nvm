@@ -144,6 +144,7 @@ namespace nvm
 
                 new Codes.Math.ADDBYTE(), //10
                 new Codes.System.END(), //11
+                new Codes.RegisterCodes.Mov.MOV(), //12
             };
         }
 

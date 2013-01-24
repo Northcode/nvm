@@ -21,6 +21,7 @@ namespace nvm
             cb.WriteBytes(VirtualMachine.codes[2].GetByteCode(), (byte)2);
             cb.WriteBytes(VirtualMachine.codes[3].GetByteCode(), (byte)3);
             cb.WriteBytes(VirtualMachine.codes[0x10].GetByteCode(), (byte)0x23);
+            cb.WriteBytes(VirtualMachine.codes[0x12].GetByteCode(), (byte)0x01);
             cb.WriteBytes(VirtualMachine.codes[0x11].GetByteCode());
 
             mem = new Buffer(512) { data = cb.GetCode() };

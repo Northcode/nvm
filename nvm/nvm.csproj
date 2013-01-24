@@ -64,6 +64,7 @@
     <Compile Include="Codes\RegisterCodes\8Bit\STCL.cs" />
     <Compile Include="Codes\RegisterCodes\8Bit\STDH.cs" />
     <Compile Include="Codes\RegisterCodes\8Bit\STDL.cs" />
+    <Compile Include="Codes\RegisterCodes\Mov\MOVB.cs" />
     <Compile Include="Codes\System\END.cs" />
     <Compile Include="OpCode.cs" />
     <Compile Include="Extentions.cs" />
