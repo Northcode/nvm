@@ -1,6 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace nvm
@@ -49,7 +48,7 @@ namespace nvm
 
         public void Write(uint address, int value)
         {
-            byte[] convertedValues = value.ToBytes();
+            byte[] convertedValues = BitConverter.GetBytes(value);
             data[address + 0] = convertedValues[0];
             data[address + 1] = convertedValues[1];
             data[address + 2] = convertedValues[2];
@@ -67,7 +66,7 @@ namespace nvm
 
         public void Write(uint address, float value)
         {
-            byte[] convertedValues = value.ToBytes();
+            byte[] convertedValues = BitConverter.GetBytes(value);
             data[address + 0] = convertedValues[0];
             data[address + 1] = convertedValues[1];
             data[address + 2] = convertedValues[2];

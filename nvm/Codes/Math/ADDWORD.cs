@@ -4,19 +4,20 @@ using System.Text;
 
 namespace nvm.Codes.Math
 {
-    class ADDBYTE : OpCode
+    class ADDWORD : OpCode
     {
         public void Execute(VirtualMachine machine)
         {
+		//Console.WriteLine("Reading registers IP: " + machine.IP);
             byte registers = machine.memory.Read(machine.IP);
             machine.IP++;
-            byte val = (byte)((byte)machine.GetRegister(VirtualMachine.FirstNibble(registers)) + (byte)machine.GetRegister(VirtualMachine.LastNibble(registers)));
-            machine.al = val;
+            ushort val = (ushort)((ushort)machine.GetRegister(VirtualMachine.FirstNibble(registers)) + (ushort)machine.GetRegister(VirtualMachine.LastNibble(registers)));
+            machine.ax = val;
         }
 
         public byte GetByteCode()
         {
-            return (byte)0x10;
+            return (byte)0x15;
         }
     }
 }

@@ -48,6 +48,9 @@
     <Compile Include="Call.cs" />
     <Compile Include="CodeBuilder.cs" />
     <Compile Include="Codes\Math\ADD.cs" />
+    <Compile Include="Codes\Math\ADDDWORD.cs" />
+    <Compile Include="Codes\Math\ADDU32.cs" />
+    <Compile Include="Codes\Math\ADDWORD.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STAX.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STBX.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STCX.cs" />
@@ -64,7 +67,9 @@
     <Compile Include="Codes\RegisterCodes\8Bit\STCL.cs" />
     <Compile Include="Codes\RegisterCodes\8Bit\STDH.cs" />
     <Compile Include="Codes\RegisterCodes\8Bit\STDL.cs" />
-    <Compile Include="Codes\RegisterCodes\Mov\MOVB.cs" />
+    <Compile Include="Codes\RegisterCodes\Mov\MOV.cs" />
+    <Compile Include="Codes\RegisterCodes\Stack\POP.cs" />
+    <Compile Include="Codes\RegisterCodes\Stack\PUSH.cs" />
     <Compile Include="Codes\System\END.cs" />
     <Compile Include="OpCode.cs" />
     <Compile Include="Extentions.cs" />
