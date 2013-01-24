@@ -44,9 +44,11 @@ namespace nvm
 
         //Memory pointer registers
         internal uint CS { get { return manager.codeAddr; } }
+        internal uint SS { get { return manager.stackAddr; } }
         internal uint DS { get { return manager.staticAddr; } }
         internal uint HS { get { return manager.heapAddr; } }
         internal uint IP;
+        internal uint SP { get { return manager.stackPointer; } }
 
         //FLAG Registers
         internal byte FJ;
@@ -180,9 +182,9 @@ namespace nvm
             Console.WriteLine(" AX:  " + ax.ToString() + " | BX:  " + bx.ToString() + " | CX:  " + cx.ToString() + " | DX:  " + dx.ToString());
             Console.WriteLine(" EAX: " + eax.ToString() + " | EBX: " + ebx.ToString() + " | ECX: " + ecx.ToString() + " | EDX: " + edx.ToString());
             Console.WriteLine(" -- SPECIAL REGISTERS: ");
-            Console.WriteLine(" --> RN: " + RN.ToString() + "  | IP: " + IP.ToString() + "  | FJ: " + FJ.ToString() + "  | FE: " + FE.ToString());
+            Console.WriteLine(" --> RN: " + RN.ToString() + "  | IP: " + IP.ToString() + "  | SP: " + SP.ToString() + "  | FJ: " + FJ.ToString() + "  | FE: " + FE.ToString());
             Console.WriteLine(" -- MEMORY REGISTERS: ");
-            Console.WriteLine(" --> CS: " + CS.ToString() + "  | DS: " + DS.ToString() + "  | HS: " + HS.ToString());
+            Console.WriteLine(" --> CS: " + CS.ToString() + " | SS: " + SS.ToString() + "  | DS: " + DS.ToString() + "  | HS: " + HS.ToString());
             Console.WriteLine("###-------------------------------------------------------------------------###");
         }
     }

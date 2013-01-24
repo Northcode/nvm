@@ -23,7 +23,7 @@ namespace nvm
         internal uint stackAddr;
 
         uint allocAddr;
-        uint stackPointer;
+        internal uint stackPointer;
 
         int maxStaticVars;
 
@@ -37,6 +37,7 @@ namespace nvm
             this.heapAddr = heapAddr;
             this.allocAddr = 0;
             this.maxStaticVars = (int)((heapAddr - staticAddr) / 4);
+            this.stackPointer = stackAddr;
         }
 
         public uint NextFreeAddr(uint size)
@@ -239,6 +240,8 @@ namespace nvm
             }
             memory.Write(stackPointer, val);
             stackPointer += (uint)val.Length;
+            memory.Write(stackPointer, (byte)0x00);
+            stackPointer++;
             memory.Write(stackPointer, (uint)val.Length);
             stackPointer += 4;
         }
@@ -247,6 +250,54 @@ namespace nvm
         {
             stackPointer--;
             return memory.Read(stackPointer);
+        }
+
+        public ushort Pop16()
+        {
+            stackPointer -= 2;
+            return memory.ReadUInt16(stackPointer);
+        }
+
+        public uint PopU32()
+        {
+            stackPointer -= 4;
+            return memory.ReadUInt(stackPointer);
+        }
+
+        public int Pop32()
+        {
+            stackPointer -= 4;
+            return memory.ReadInt(stackPointer);
+        }
+
+        public float PopF()
+        {
+            stackPointer -= 4;
+            return memory.ReadFloat(stackPointer);
+        }
+
+        public string PopS()
+        {
+            stackPointer -= 4;
+            int len = memory.ReadInt(stackPointer);
+            stackPointer -= (uint)(len + 1);
+            return memory.ReadString(stackPointer);
+        }
+
+        internal void MemDump(uint p1, uint p2)
+        {
+            int n = 0;
+            for (uint i = p1; i < p2; i++)
+            {
+                Console.Write(" " + memory.data[i]);
+                n++;
+                if (n == 32)
+                {
+                    Console.WriteLine();
+                    n = 0;
+                }
+            }
+            Console.WriteLine();
         }
     }
 }
