@@ -19,7 +19,7 @@ namespace nvm
             CodeBuilder cb = new CodeBuilder(1024);
             cb.WriteBytes((byte)0x0d, (int)2000);
             cb.WriteBytes((byte)0x0e, (int)660);
-		    cb.WriteBytes((byte)0x17, (byte)0xde);
+		    cb.WriteBytes((byte)0x1a, (byte)0xed);
             cb.WriteBytes((byte)0x11);
 
             mem = new Buffer(512) { data = cb.GetCode() };

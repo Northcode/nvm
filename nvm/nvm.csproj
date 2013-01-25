@@ -51,6 +51,9 @@
     <Compile Include="Codes\Math\ADDDWORD.cs" />
     <Compile Include="Codes\Math\ADDU32.cs" />
     <Compile Include="Codes\Math\ADDWORD.cs" />
+    <Compile Include="Codes\Math\SUBBYTE.cs" />
+    <Compile Include="Codes\Math\SUBDWORD.cs" />
+    <Compile Include="Codes\Math\SUBWORD.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STAX.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STBX.cs" />
     <Compile Include="Codes\RegisterCodes\16 Bit\STCX.cs" />

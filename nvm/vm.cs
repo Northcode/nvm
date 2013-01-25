@@ -10,10 +10,12 @@ namespace nvm
     {
         internal Buffer memory;
         internal MemoryManager manager;
-        internal Stack<object> stack;
 
         internal Stack<Call> callstack;
         internal Class[] classes;
+
+        internal int height;
+        internal int width;
 
         internal static OpCode[] codes;
 
@@ -54,6 +56,12 @@ namespace nvm
         internal byte FE;
         internal bool RN;
         #endregion
+
+        public VirtualMachine()
+        {
+            height = 26;
+            width = 84;
+        }
 
         public object GetRegister(byte reg)
         {
@@ -149,6 +157,9 @@ namespace nvm
 		        new Codes.Math.ADDWORD(), //15
 		        new Codes.Math.ADDU32(), //16
 		        new Codes.Math.ADDDWORD(), //17
+                new Codes.Math.SUBBYTE(), //18
+                new Codes.Math.SUBWORD(), //19
+                new Codes.Math.SUBDWORD(), //1a
             };
         }
 
@@ -172,8 +183,7 @@ namespace nvm
         internal void Run(bool debug)
         {
             RN = true;
-		    Console.SetCursorPosition(0,1);
-		    DrawScreen();
+            InitScreen();
             while (RN)
             {
                 if (debug) { Console.ReadKey(); }
@@ -185,6 +195,16 @@ namespace nvm
             }
         }
 
+        private void InitScreen()
+        {
+            Console.SetCursorPosition(0, 1);
+            Console.BufferHeight = height;
+            Console.BufferWidth = width;
+            Console.WindowHeight = height;
+            Console.WindowWidth = width;
+            DrawScreen();
+        }
+
 		internal void DrawScreen()
 		{
 			int x = Console.CursorLeft;
@@ -192,8 +212,8 @@ namespace nvm
 			Console.SetCursorPosition(0,0);
 			Console.BackgroundColor = ConsoleColor.Gray;
 			Console.ForegroundColor = ConsoleColor.Black;
-			Console.WriteLine((" nvm running at address: " + IP + " | RUNNING: " + RN).PadRight(Console.WindowWidth - 1));
-			Console.SetCursorPosition(0,16);
+			Console.WriteLine((" nvm running at address: " + IP + " | RUNNING: " + RN).PadRight(width));
+			Console.SetCursorPosition(0,height - 9);
 			RegDump();
 			Console.BackgroundColor = ConsoleColor.Black;
 			Console.ForegroundColor = ConsoleColor.Gray;
@@ -203,15 +223,14 @@ namespace nvm
 
         internal void RegDump()
         {
-            Console.WriteLine("#----------------------------------REGISTER DUMP------------------------------#".PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" AL:  " + al.ToString() + " | AH:  " + ah.ToString() + " | BL:  " + bl.ToString() + " | BH:  " + bh.ToString() + " | CL:  " + cl.ToString() + " | CH: " + ch.ToString() + " | DL:  " + dl.ToString() + " | DH:  " + dh.ToString()).PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" AX:  " + ax.ToString() + " | BX:  " + bx.ToString() + " | CX:  " + cx.ToString() + " | DX:  " + dx.ToString()).PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" EAX: " + eax.ToString() + " | EBX: " + ebx.ToString() + " | ECX: " + ecx.ToString() + " | EDX: " + edx.ToString()).PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" -- SPECIAL REGISTERS: ").PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" --> RN: " + RN.ToString() + "  | IP: " + IP.ToString() + "  | SP: " + SP.ToString() + "  | FJ: " + FJ.ToString() + "  | FE: " + FE.ToString()).PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" -- MEMORY REGISTERS: ").PadRight(Console.WindowWidth - 1));
-            Console.WriteLine((" --> CS: " + CS.ToString() + " | SS: " + SS.ToString() + "  | DS: " + DS.ToString() + "  | HS: " + HS.ToString()).PadRight(Console.WindowWidth - 1));
-            Console.WriteLine(("###-------------------------------------------------------------------------###").PadRight(Console.WindowWidth - 1));
+            Console.Write("----- REG DUMP -".PadRight(width, '-'));
+            Console.Write((" AL: " + al.ToString().PadLeft(5) + " AH: " + ah.ToString().PadLeft(5) + " BL: " + bl.ToString().PadLeft(5) + " BH: " + bh.ToString().PadLeft(5) + " CL: " + cl.ToString().PadLeft(5) + " CH: " + ch.ToString() + " DL: " + dl.ToString().PadLeft(5) + " DH: " + dh.ToString().PadLeft(5)).PadRight(width));
+            Console.Write((" AX: " + ax.ToString().PadLeft(5) + " BX: " + bx.ToString().PadLeft(5) + " CX: " + cx.ToString().PadLeft(5) + " DX: " + dx.ToString().PadLeft(5)).PadRight(width));
+            Console.Write((" EAX: " + eax.ToString().PadLeft(8) + " EBX: " + ebx.ToString().PadLeft(8) + " ECX: " + ecx.ToString().PadLeft(8) + " EDX: " + edx.ToString().PadLeft(8)).PadRight(width));
+            Console.Write((" -- SPECIAL REGISTERS: ").PadRight(width));
+            Console.Write((" --> RN: " + RN.ToString().PadLeft(5) + "  | IP: " + IP.ToString().PadLeft(5) + (" : 0x" + (memory.data[IP]).ToString("X").PadLeft(2, '0')).PadRight(2) + ("(" + VirtualMachine.codes[memory.data[IP]].GetType().Name + ")").PadRight(10) + "  | SP: " + SP.ToString().PadLeft(5) + "  | FJ: " + FJ.ToString().PadLeft(5) + "  | FE: " + FE.ToString().PadLeft(5)).PadRight(width));
+            Console.Write((" -- MEMORY REGISTERS: ").PadRight(width));
+            Console.Write((" --> CS: " + CS.ToString().PadLeft(5) + " | SS: " + SS.ToString().PadLeft(5) + "  | DS: " + DS.ToString().PadLeft(5) + "  | HS: " + HS.ToString().PadLeft(5)).PadRight(width));
         }
     }
 }
