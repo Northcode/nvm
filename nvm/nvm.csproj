@@ -51,6 +51,12 @@
     <Compile Include="Codes\Math\ADDDWORD.cs" />
     <Compile Include="Codes\Math\ADDU32.cs" />
     <Compile Include="Codes\Math\ADDWORD.cs" />
+    <Compile Include="Codes\Math\DIVBYTE.cs" />
+    <Compile Include="Codes\Math\DIVDWORD.cs" />
+    <Compile Include="Codes\Math\DIVWORD.cs" />
+    <Compile Include="Codes\Math\MULBYTE.cs" />
+    <Compile Include="Codes\Math\MULDWORD.cs" />
+    <Compile Include="Codes\Math\MULWORD.cs" />
     <Compile Include="Codes\Math\SUBBYTE.cs" />
     <Compile Include="Codes\Math\SUBDWORD.cs" />
     <Compile Include="Codes\Math\SUBWORD.cs" />

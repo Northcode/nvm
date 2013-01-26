@@ -130,36 +130,46 @@ namespace nvm
         public static void InitOpCodes()
         {
             VirtualMachine.codes = new OpCode[] { 
-                new Codes.RegisterCodes.STAL(), //0
-                new Codes.RegisterCodes.STAH(), //1
-                new Codes.RegisterCodes.STBL(), //2
-                new Codes.RegisterCodes.STBH(), //3
-                new Codes.RegisterCodes.STCL(), //4
-                new Codes.RegisterCodes.STCH(), //5
-                new Codes.RegisterCodes.STDL(), //6
-                new Codes.RegisterCodes.STDH(), //7
+                new Codes.RegisterCodes.STAL(),             //0
+                new Codes.RegisterCodes.STAH(),             //1
+                new Codes.RegisterCodes.STBL(),             //2
+                new Codes.RegisterCodes.STBH(),             //3
+                new Codes.RegisterCodes.STCL(),             //4
+                new Codes.RegisterCodes.STCH(),             //5
+                new Codes.RegisterCodes.STDL(),             //6
+                new Codes.RegisterCodes.STDH(),             //7
 
-                new Codes.RegisterCodes._16_Bit.STAX(), //8
-                new Codes.RegisterCodes._16_Bit.STBX(), //9
-                new Codes.RegisterCodes._16_Bit.STCX(), //a
-                new Codes.RegisterCodes._16_Bit.STDX(), //b
+                new Codes.RegisterCodes._16_Bit.STAX(),     //8
+                new Codes.RegisterCodes._16_Bit.STBX(),     //9
+                new Codes.RegisterCodes._16_Bit.STCX(),     //a
+                new Codes.RegisterCodes._16_Bit.STDX(),     //b
 
-                new Codes.RegisterCodes._32_Bit.STEAX(), //c
-                new Codes.RegisterCodes._32_Bit.STEBX(), //d
-                new Codes.RegisterCodes._32_Bit.STECX(), //e
-                new Codes.RegisterCodes._32_Bit.STEDX(), //f
+                new Codes.RegisterCodes._32_Bit.STEAX(),    //c
+                new Codes.RegisterCodes._32_Bit.STEBX(),    //d
+                new Codes.RegisterCodes._32_Bit.STECX(),    //e
+                new Codes.RegisterCodes._32_Bit.STEDX(),    //f
 
-                new Codes.Math.ADDBYTE(), //10
-                new Codes.System.END(), //11
-                new Codes.RegisterCodes.Mov.MOV(), //12
-                new Codes.RegisterCodes.Stack.PUSH(), //13
-                new Codes.RegisterCodes.Stack.POP(), //14
-		        new Codes.Math.ADDWORD(), //15
-		        new Codes.Math.ADDU32(), //16
-		        new Codes.Math.ADDDWORD(), //17
-                new Codes.Math.SUBBYTE(), //18
-                new Codes.Math.SUBWORD(), //19
-                new Codes.Math.SUBDWORD(), //1a
+                new Codes.Math.ADDBYTE(),                   //10
+                new Codes.System.END(),                     //11
+                new Codes.RegisterCodes.Mov.MOV(),          //12
+                new Codes.RegisterCodes.Stack.PUSH(),       //13
+                new Codes.RegisterCodes.Stack.POP(),        //14
+
+		        new Codes.Math.ADDWORD(),                   //15
+		        new Codes.Math.ADDU32(),                    //16
+		        new Codes.Math.ADDDWORD(),                  //17
+
+                new Codes.Math.SUBBYTE(),                   //18
+                new Codes.Math.SUBWORD(),                   //19
+                new Codes.Math.SUBDWORD(),                  //1a
+
+                new Codes.Math.MULBYTE(),                   //1b
+                new Codes.Math.MULWORD(),                   //1c
+                new Codes.Math.MULDWORD(),                   //1d
+
+                new Codes.Math.DIVBYTE(),                   //1e
+                new Codes.Math.DIVWORD(),                   //1f
+                new Codes.Math.DIVDWORD(),                  //20
             };
         }
 
