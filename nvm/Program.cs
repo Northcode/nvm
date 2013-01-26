@@ -10,6 +10,7 @@ namespace nvm
         public static void Main(string[] args)
         {
             VirtualMachine.InitOpCodes();
+            VirtualMachine.InitInterupt();
             VirtualMachine vm = new VirtualMachine();
             Buffer mem = new Buffer(512);
             vm.memory = mem;
@@ -17,10 +18,15 @@ namespace nvm
             vm.manager = mm;
 
             CodeBuilder cb = new CodeBuilder(1024);
-            cb.WriteBytes((byte)0x0d, (int)2000);
-            cb.WriteBytes((byte)0x0e, (int)660);
-		    cb.WriteBytes((byte)0x1a, (byte)0xed);
+            cb.WriteBytes((byte)0x0f, (int)100);
+            cb.WriteBytes((byte)0x22);
+            cb.WriteBytes((byte)0x0f, 150);
+		    cb.WriteBytes((byte)0x23);
+            cb.WriteBytes((byte)0x01, (byte)0x01);
+            cb.WriteBytes((byte)0x21, (byte)0x00);
             cb.WriteBytes((byte)0x11);
+            cb.Jump(100);
+            cb.WriteBytes("Hello World");
 
             mem = new Buffer(512) { data = cb.GetCode() };
             vm.memory = mem;

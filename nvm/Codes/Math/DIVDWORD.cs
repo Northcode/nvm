@@ -11,7 +11,7 @@ namespace nvm.Codes.Math
         {
             byte registers = machine.memory.Read(machine.IP);
             machine.IP++;
-            machine.ax = (int)((int)machine.GetRegister(VirtualMachine.LastNibble(registers)) / (int)machine.GetRegister(VirtualMachine.FirstNibble(registers)));
+            machine.eax = (int)((int)machine.GetRegister(VirtualMachine.LastNibble(registers)) / (int)machine.GetRegister(VirtualMachine.FirstNibble(registers)));
         }
 
         public byte GetByteCode()

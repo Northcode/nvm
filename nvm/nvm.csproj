@@ -79,7 +79,11 @@
     <Compile Include="Codes\RegisterCodes\Mov\MOV.cs" />
     <Compile Include="Codes\RegisterCodes\Stack\POP.cs" />
     <Compile Include="Codes\RegisterCodes\Stack\PUSH.cs" />
+    <Compile Include="Codes\RegisterCodes\Stack\PUSHSTR.cs" />
     <Compile Include="Codes\System\END.cs" />
+    <Compile Include="Codes\System\INT.cs" />
+    <Compile Include="Interupt.cs" />
+    <Compile Include="Interupts\Interupt0.cs" />
     <Compile Include="OpCode.cs" />
     <Compile Include="Extentions.cs" />
     <Compile Include="IClassContainer.cs" />
@@ -89,6 +93,7 @@
     <Compile Include="Objects\Field.cs" />
     <Compile Include="Objects\Instance.cs" />
     <Compile Include="Objects\Local.cs" />
+    <Compile Include="Codes\RegisterCodes\Stack\POPSTR.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="vm.cs" />
@@ -96,9 +101,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Interupts\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -18,6 +18,7 @@ namespace nvm
         internal int width;
 
         internal static OpCode[] codes;
+        internal static Interupt[] interupts;
 
         #region registers
 
@@ -170,6 +171,17 @@ namespace nvm
                 new Codes.Math.DIVBYTE(),                   //1e
                 new Codes.Math.DIVWORD(),                   //1f
                 new Codes.Math.DIVDWORD(),                  //20
+
+                new Codes.System.INT(),                     //21
+                new Codes.RegisterCodes.Stack.PUSHSTR(),    //22
+                new Codes.RegisterCodes.Stack.POPSTR(),     //23
+            };
+        }
+
+        public static void InitInterupt()
+        {
+            VirtualMachine.interupts = new Interupt[] {
+                new Interupts.Interupt0(),
             };
         }
 
@@ -196,12 +208,12 @@ namespace nvm
             InitScreen();
             while (RN)
             {
+                DrawScreen();
                 if (debug) { Console.ReadKey(); }
 		    	//Console.WriteLine("IP: " + IP);
                 byte ccode = memory.Read(IP);
                 IP++;
                 VirtualMachine.codes[ccode].Execute(this);
-			    DrawScreen();
             }
         }
 
