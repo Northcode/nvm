@@ -180,6 +180,7 @@ namespace nvm
 
                 new Codes.System.CALL(),                    //24
                 new Codes.System.RET(),                     //25
+                new Codes.System.JMP(),                     //26
             };
         }
 
