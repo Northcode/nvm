@@ -22,6 +22,15 @@ namespace nvm.Interupts
                 case 0x02:
                     Console.WriteLine();
                     break;
+                case 0x03:
+                    Console.Write(machine.al);
+                    break;
+                case 0x04:
+                    Console.Write(machine.ax);
+                    break;
+                case 0x05:
+                    Console.Write(machine.eax);
+                    break;
                 default:
                     break;
             }

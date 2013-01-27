@@ -80,8 +80,10 @@
     <Compile Include="Codes\RegisterCodes\Stack\POP.cs" />
     <Compile Include="Codes\RegisterCodes\Stack\PUSH.cs" />
     <Compile Include="Codes\RegisterCodes\Stack\PUSHSTR.cs" />
+    <Compile Include="Codes\System\CALL.cs" />
     <Compile Include="Codes\System\END.cs" />
     <Compile Include="Codes\System\INT.cs" />
+    <Compile Include="Codes\System\RET.cs" />
     <Compile Include="Interupt.cs" />
     <Compile Include="Interupts\Interupt0.cs" />
     <Compile Include="OpCode.cs" />

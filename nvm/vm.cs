@@ -62,6 +62,7 @@ namespace nvm
         {
             height = 26;
             width = 84;
+            callstack = new Stack<Call>();
         }
 
         public object GetRegister(byte reg)
@@ -173,8 +174,12 @@ namespace nvm
                 new Codes.Math.DIVDWORD(),                  //20
 
                 new Codes.System.INT(),                     //21
+
                 new Codes.RegisterCodes.Stack.PUSHSTR(),    //22
                 new Codes.RegisterCodes.Stack.POPSTR(),     //23
+
+                new Codes.System.CALL(),                    //24
+                new Codes.System.RET(),                     //25
             };
         }
 
