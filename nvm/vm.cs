@@ -47,7 +47,7 @@ namespace nvm
         //Memory pointer registers
         internal uint CS { get { return manager.codeAddr; } }
         internal uint SS { get { return manager.stackAddr; } }
-        internal uint DS { get { return manager.staticAddr; } }
+        internal uint DS { get { return manager.localAddr; } }
         internal uint HS { get { return manager.heapAddr; } }
         internal uint IP;
         internal uint SP { get { return manager.stackPointer; } }
@@ -181,6 +181,10 @@ namespace nvm
                 new Codes.System.CALL(),                    //24
                 new Codes.System.RET(),                     //25
                 new Codes.System.JMP(),                     //26
+
+                new Codes.System.STLOC(),                   //27
+                new Codes.System.LDLOC(),                   //28
+                new Codes.System.ALLOC(),                   //29
             };
         }
 

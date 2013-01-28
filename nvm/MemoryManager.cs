@@ -9,15 +9,16 @@ namespace nvm
     {
         public const byte TYPE_EMPTY = 0;
         public const byte TYPE_BYTE = 1;
-        public const byte TYPE_4BYTE = 2;
-        public const byte TYPE_STRING = 3;
-        public const byte TYPE_INSTANCE = 4;
+        public const byte TYPE_2BYTE = 2;
+        public const byte TYPE_4BYTE = 3;
+        public const byte TYPE_STRING = 4;
+        public const byte TYPE_INSTANCE = 5;
 
         Buffer memory;
         IClassContainer classcontainer;
 
         internal uint codeAddr;
-        internal uint staticAddr;
+        internal uint localAddr;
         internal uint heapAddr;
         internal uint stackAddr;
 
@@ -32,7 +33,7 @@ namespace nvm
             memory = Machine.memory;
             this.codeAddr = codeAddr;
             this.stackAddr = stackAddr;
-            this.staticAddr = staticAddr;
+            this.localAddr = staticAddr;
             this.heapAddr = heapAddr;
             this.allocAddr = 0;
             this.maxStaticVars = (int)((heapAddr - staticAddr) / 4);
@@ -148,7 +149,7 @@ namespace nvm
 
         public uint GetAddr(int index)
         {
-            return (uint)(staticAddr + (index * 4));
+            return (uint)(localAddr + (index * 4));
         }
 
         public void Free(int index)
@@ -183,7 +184,7 @@ namespace nvm
 
         public void Push(byte val)
         {
-            if (stackPointer + 1 > staticAddr)
+            if (stackPointer + 1 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
@@ -193,7 +194,7 @@ namespace nvm
 
         public void Push(ushort val)
         {
-            if (stackPointer + 2 > staticAddr)
+            if (stackPointer + 2 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
@@ -203,7 +204,7 @@ namespace nvm
 
         public void Push(uint val)
         {
-            if (stackPointer + 4 > staticAddr)
+            if (stackPointer + 4 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
@@ -213,7 +214,7 @@ namespace nvm
 
         public void Push(int val)
         {
-            if (stackPointer + 4 > staticAddr)
+            if (stackPointer + 4 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
@@ -223,7 +224,7 @@ namespace nvm
 
         public void Push(float val)
         {
-            if (stackPointer + 4 > staticAddr)
+            if (stackPointer + 4 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
@@ -233,7 +234,7 @@ namespace nvm
 
         public void Push(string val)
         {
-            if (stackPointer + val.Length + 1 + 4 > staticAddr)
+            if (stackPointer + val.Length + 1 + 4 > localAddr)
             {
                 throw new StackOverflowException("Cannot push any more items onto the stack!");
             }
