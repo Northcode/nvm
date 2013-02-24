@@ -11,7 +11,11 @@ namespace nvm.Codes.Registers.LD
         {
             byte val = machine.memory.Read(machine.IP);
             machine.IP++;
+<<<<<<< HEAD:nvm/Codes/Registers/LD/LDAL.cs
             machine.al = val;
+=======
+            VirtualMachine.interupts[code].Run(machine);
+>>>>>>> comit:nvm/Codes/System/INT.cs
         }
 
         public byte GetByteCode()
