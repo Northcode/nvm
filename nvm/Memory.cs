@@ -33,6 +33,18 @@ namespace nvm
             data = new byte[size];
         }
 
+        public Buffer(int size, byte[] data)
+        {
+            this.data = new byte[size];
+            if (data.Length < size)
+            {
+                for (int i = 0; i < data.Length; i++)
+                {
+                    this.data[i] = data[i];
+                }
+            }
+        }
+
         //Write methods
         public void Write(uint address, byte value)
         {
@@ -112,6 +124,18 @@ namespace nvm
             StringBuilder sb = new StringBuilder();
             int i = 0;
             while (data[address + i] != 0x00)
+            {
+                sb.Append((char)(data[address + i]));
+                i++;
+            }
+            return sb.ToString();
+        }
+
+        internal string ReadString(uint address, int len)
+        {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            while (i < len)
             {
                 sb.Append((char)(data[address + i]));
                 i++;

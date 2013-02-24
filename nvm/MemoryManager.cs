@@ -281,7 +281,7 @@ namespace nvm
             stackPointer -= 4;
             int len = memory.ReadInt(stackPointer);
             stackPointer -= (uint)(len + 1);
-            return memory.ReadString(stackPointer);
+            return memory.ReadString(stackPointer,len);
         }
 
         internal void MemDump(uint p1, uint p2)

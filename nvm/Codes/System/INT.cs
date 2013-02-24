@@ -11,7 +11,7 @@ namespace nvm.Codes.System
         {
             byte code = machine.memory.Read(machine.IP);
             machine.IP++;
-            VirtualMachine.interupts[0].Run(machine);
+            VirtualMachine.interupts[code].Run(machine);
         }
 
         public byte GetByteCode()
