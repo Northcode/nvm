@@ -1,20 +1,22 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace nvm.Codes.RegisterCodes
+namespace nvm.Codes.Registers.LD
 {
-    internal class STCH : OpCode
+    class LDAL : OpCode
     {
         public void Execute(VirtualMachine machine)
         {
-            machine.ch = machine.memory.Read(machine.IP);
+            byte val = machine.memory.Read(machine.IP);
             machine.IP++;
+            machine.al = val;
         }
 
         public byte GetByteCode()
         {
-            return (byte)0x04;
+            return 0x01;
         }
     }
 }
