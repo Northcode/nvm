@@ -1,20 +1,20 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
-namespace nvm.Codes.RegisterCodes
+namespace nvm.Codes
 {
-    internal class STCH : OpCode
+    class NOP : OpCode
     {
         public void Execute(VirtualMachine machine)
         {
-            machine.ch = machine.memory.Read(machine.IP);
-            machine.IP++;
+            return;
         }
 
         public byte GetByteCode()
         {
-            return (byte)0x04;
+            return 0x00;
         }
     }
 }

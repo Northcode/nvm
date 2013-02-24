@@ -10,6 +10,12 @@ namespace nvm
     {
         public static void Main(string[] args)
         {
+<<<<<<< HEAD
+            VirtualMachine vm = new VirtualMachine(new Class[0], new byte[5], 1, 1, 100);
+            vm.DEBUG = true;
+
+            vm.Run();
+=======
             VirtualMachine.InitOpCodes();
             VirtualMachine.InitInterupt();
             VirtualMachine vm = new VirtualMachine();
@@ -23,6 +29,7 @@ namespace nvm
             vm.manager = mm;
 
             vm.Run(true);
+>>>>>>> comit
 
             Console.ReadKey();
         }

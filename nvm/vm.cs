@@ -1,4 +1,5 @@
-﻿using nvm.Codes;
+﻿/*
+using nvm.Codes;
 using nvm.Objects;
 using System;
 using System.Collections.Generic;
@@ -267,3 +268,4 @@ namespace nvm
 		}
 	}
 }
+*/
