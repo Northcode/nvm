@@ -73,8 +73,28 @@ namespace nvm
         public static void InitOpCodes()
         {
             opcodes = new OpCode[] {
-                new Codes.NOP(),
-                new Codes.Registers.LD.LDAL(),
+                new Codes.NOP(),                //0x00
+                new Codes.Registers.LD(),       //0x01
+                new Codes.Registers.MOV(),      //0x02
+                new Codes.Stack.PUSH_B(),       //0x03
+                new Codes.Stack.PUSH_S(),       //0x04
+                new Codes.Stack.PUSH_INT(),     //0x05
+                new Codes.Stack.PUSH_STR(),     //0x06
+                new Codes.END(),                //0x07
+                new Codes.Strings.STOSB(),      //0x08
+                new Codes.Stack.POP_B(),        //0x09
+                new Codes.Stack.POP_S(),        //0x0a
+                new Codes.Stack.POP_INT(),      //0x0b
+                new Codes.Stack.POP_STR(),      //0x0c
+                new Codes.Strings.LODSB(),      //0x0d
+                new Codes.INT(),                //0x0e
+                new Codes.JUMP.JMP(),           //0x0f
+                new Codes.JUMP.CALL(),          //0x10
+                new Codes.JUMP.RET(),           //0x11
+            };
+
+            interups = new Interupt[] {
+                new Interupts.INT1(),           //0x00
             };
         }
 
@@ -194,10 +214,12 @@ namespace nvm
         private void InitScreen()
         {
             Console.SetCursorPosition(0, 1);
-            Console.BufferHeight = height;
-            Console.BufferWidth = width;
-            Console.WindowHeight = height;
-            Console.WindowWidth = width;
+            if (Console.WindowHeight > height || Console.WindowWidth > width)
+            {
+                Console.SetWindowSize(width, height);
+            }
+            Console.SetBufferSize(width, height);
+            Console.SetWindowSize(width, height);
             DrawScreen();
         }
 

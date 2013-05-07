@@ -1,0 +1,19 @@
+﻿start:
+LODSB "Hello World"
+CALL :printstring
+NOP
+CALL :readkey
+JMP :end
+
+printstring:
+LD h01 h01
+INT h00
+RET
+
+readkey:
+LD h01 h08
+INT h00
+RET
+
+end:
+END

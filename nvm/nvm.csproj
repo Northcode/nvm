@@ -45,11 +45,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assembler\Assembler.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CodeBuilder.cs" />
+    <Compile Include="Codes\END.cs" />
+    <Compile Include="Codes\INT.cs" />
+    <Compile Include="Codes\JUMP\CALL.cs" />
+    <Compile Include="Codes\JUMP\JMP.cs" />
+    <Compile Include="Codes\JUMP\RET.cs" />
     <Compile Include="Codes\NOP.cs" />
-    <Compile Include="Codes\Registers\LD\LDAL.cs" />
+    <Compile Include="Codes\Registers\LD.cs" />
+    <Compile Include="Codes\Registers\MOV.cs" />
+    <Compile Include="Codes\Stack\POP.cs" />
+    <Compile Include="Codes\Stack\Push.cs" />
+    <Compile Include="Codes\Strings\LODSB.cs" />
+    <Compile Include="Codes\Strings\STOSB.cs" />
     <Compile Include="fe.cs" />
+    <Compile Include="Interupts\INT.cs" />
     <Compile Include="IVirtualMachine.cs" />
     <Compile Include="Interupt.cs" />
     <Compile Include="OpCode.cs" />
@@ -70,7 +82,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Interupts\" />
+    <None Include="test.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
