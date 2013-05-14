@@ -58,6 +58,10 @@ namespace nvm
         internal byte FE;
         internal bool RN;
         internal bool DBG;
+
+        //Callstack top generator
+        internal uint CSA { get { return callstack.Peek().Caddr; }}
+        internal uint CSR { get { return callstack.Peek().Raddr; } }
         #endregion
 
         public VirtualMachine(Class[] classes, byte[] program, int stacksize, int staticsize, int RamSize)
@@ -91,6 +95,8 @@ namespace nvm
                 new Codes.JUMP.JMP(),           //0x0f
                 new Codes.JUMP.CALL(),          //0x10
                 new Codes.JUMP.RET(),           //0x11
+                new Codes.Registers.MOVS(),     //0x12
+                new Codes.DBG(),                //0x13
             };
 
             interups = new Interupt[] {
@@ -138,6 +144,30 @@ namespace nvm
                 case 0x0d: return ebx;
                 case 0x0e: return ecx;
                 case 0x0f: return edx;
+                default:
+                    return 0;
+            }
+        }
+
+        internal object GetSpecialRegister(byte reg)
+        {
+            switch (reg)
+            {
+                case 0x00: return (int)IP;
+
+                case 0x01: return (int)CS;
+                case 0x02: return (int)SS;
+                case 0x03: return (int)DS;
+                case 0x04: return (int)HS;
+                case 0x05: return (int)SP;
+
+                case 0x06: return FJ;
+                case 0x07: return FE;
+                case 0x08: return RN;
+                case 0x09: return DBG;
+
+                case 0x0a: return (int)CSA;
+                case 0x0b: return (int)CSR;
                 default:
                     return 0;
             }

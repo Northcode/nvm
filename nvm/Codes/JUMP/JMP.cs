@@ -10,7 +10,7 @@ namespace nvm.Codes.JUMP
         public void Execute(VirtualMachine machine)
         {
             uint addr = machine.memory.ReadUInt(machine.IP);
-            machine.IP++;
+            machine.IP += 4;
             machine.IP = addr;
         }
 

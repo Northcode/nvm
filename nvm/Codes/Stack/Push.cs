@@ -59,7 +59,7 @@ namespace nvm.Codes.Stack
         {
             byte reg = machine.memory.Read(machine.IP);
             machine.IP++;
-            uint addr = (uint)machine.GetRegister(reg);
+            uint addr = (uint)((int)machine.GetRegister(reg));
             string str = machine.memory.ReadString(addr);
             machine.Mmanager.Push(str);
         }

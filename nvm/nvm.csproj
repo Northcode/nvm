@@ -48,6 +48,7 @@
     <Compile Include="Assembler\Assembler.cs" />
     <Compile Include="Call.cs" />
     <Compile Include="CodeBuilder.cs" />
+    <Compile Include="Codes\DBG.cs" />
     <Compile Include="Codes\END.cs" />
     <Compile Include="Codes\INT.cs" />
     <Compile Include="Codes\JUMP\CALL.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="Codes\NOP.cs" />
     <Compile Include="Codes\Registers\LD.cs" />
     <Compile Include="Codes\Registers\MOV.cs" />
+    <Compile Include="Codes\Registers\MOVS.cs" />
     <Compile Include="Codes\Stack\POP.cs" />
     <Compile Include="Codes\Stack\Push.cs" />
     <Compile Include="Codes\Strings\LODSB.cs" />
@@ -85,6 +87,9 @@
     <None Include="test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Codes\Memory\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

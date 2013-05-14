@@ -64,13 +64,19 @@ namespace nvm.Assembly
                         OpCode op = VirtualMachine.opcodes.First(p => p.GetType().Name == trimmed);
                         result.Add(op.GetByteCode());
                     }
+                    else if (word.StartsWith("."))
+                    {
+                        result.Add(VirtualMachine.opcodes[0x10].GetByteCode());
+                        labelcalls.Add(new Tuple<int,string>(result.Count, word.Substring(1)));
+                        result.AddRange(new byte[4]);
+                    }
                     else if (word.EndsWith(":"))
                     {
                         labels.Add(word.Substring(0, word.Length - 1), (uint)result.Count);
                     }
                     else if (word.StartsWith(":"))
                     {
-                        labelcalls.Add(new Tuple<int,string>(result.Count, word.Substring(1)));
+                        labelcalls.Add(new Tuple<int, string>(result.Count, word.Substring(1)));
                         result.AddRange(new byte[4]);
                     }
                     else
