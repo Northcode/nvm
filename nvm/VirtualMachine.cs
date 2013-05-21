@@ -9,7 +9,9 @@ namespace nvm
 {
     public class VirtualMachine : IClassContainer, IVirtualMachine
     {
-        Class[] classes;
+        public List<Class> classes;
+
+        public Class currentBuildingClass; //Used as a temp var for storing the current prototyping class
 
         internal int height;
         internal int width;
@@ -64,9 +66,9 @@ namespace nvm
         internal uint CSR { get { return callstack.Peek().Raddr; } }
         #endregion
 
-        public VirtualMachine(Class[] classes, byte[] program, int stacksize, int staticsize, int RamSize)
+        public VirtualMachine(byte[] program, int stacksize, int staticsize, int RamSize)
         {
-            this.classes = classes;
+            this.classes = new List<Class>();
             this.callstack = new Stack<Call>();
             this.height = 30;
             this.width = 90;
@@ -97,6 +99,10 @@ namespace nvm
                 new Codes.JUMP.RET(),           //0x11
                 new Codes.Registers.MOVS(),     //0x12
                 new Codes.DBG(),                //0x13
+                new Codes.OOP.DEF(),            //0x14
+                new Codes.OOP.DEFV(),           //0x15
+                new Codes.OOP.DEFF(),           //0x16
+                new Codes.OOP.ENDDEF(),         //0x17
             };
 
             interups = new Interupt[] {
@@ -233,7 +239,7 @@ namespace nvm
 
         public Objects.Class GetClass(string Name)
         {
-            return Array.Find<Class>(classes, p => p.name == Name);
+            return classes.Find(p => p.name == Name);
         }
 
         public VirtualMachine GetMachine()
@@ -292,6 +298,19 @@ namespace nvm
         public static byte LastNibble(byte val)
         {
             return (byte)((byte)(val >> 4) & 15);
+        }
+
+
+        public bool ContainsClass(string ClassName)
+        {
+            if (classes.Count > 0)
+            {
+                return classes.All(p => p.name == ClassName);
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

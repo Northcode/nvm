@@ -5,15 +5,15 @@ using System.Text;
 
 namespace nvm.Objects
 {
-    class Field
+    public class Field
     {
-        internal byte type;
-        internal string name;
-        internal object newobj;
+        public Class Parent { get; set; }
+        public string Name { get; set; }
+        public Class Type { get; set; }
 
-        internal object New()
+        public object New()
         {
-            return newobj;
+            return Type.New();
         }
     }
 }

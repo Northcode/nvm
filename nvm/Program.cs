@@ -21,7 +21,7 @@ namespace nvm
 
             Console.Clear();
 
-            VirtualMachine vm = new VirtualMachine(new Class[0], code, 100, 100, 1024);
+            VirtualMachine vm = new VirtualMachine(code, 100, 100, 1024);
             vm.DEBUG = false;
 
             vm.Run();

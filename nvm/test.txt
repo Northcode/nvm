@@ -1,4 +1,17 @@
-﻿start:
+﻿DEF "test"
+DEFV "a" "int32"
+
+DEFF "do" :test.do
+
+JMP :test-end
+
+test.do:
+RET
+
+test-end:
+ENDDEF
+
+start:
 LD h00 h01
 DBG
 LODSB "Hello World!"

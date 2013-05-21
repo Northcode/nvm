@@ -8,6 +8,7 @@ namespace nvm
     interface IClassContainer
     {
         Class GetClass(string Name);
+        bool ContainsClass(string ClassName);
 
         VirtualMachine GetMachine();
     }
