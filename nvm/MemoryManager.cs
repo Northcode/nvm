@@ -27,6 +27,8 @@ namespace nvm
 
         int maxStaticVars;
 
+        internal List<Instance> instances;
+
         public MemoryManager(VirtualMachine Machine, uint codeAddr, uint stackAddr, uint staticAddr, uint heapAddr)
         {
             classcontainer = Machine;

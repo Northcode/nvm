@@ -23,6 +23,7 @@ namespace nvm
         internal static OpCode[] opcodes;
         internal static Interupt[] interups;
 
+
         #region registers
 
         //8 Bit registers
@@ -103,6 +104,7 @@ namespace nvm
                 new Codes.OOP.DEFV(),           //0x15
                 new Codes.OOP.DEFF(),           //0x16
                 new Codes.OOP.ENDDEF(),         //0x17
+                new Codes.OOP.LDTHIS(),         //0x18
             };
 
             interups = new Interupt[] {

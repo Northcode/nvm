@@ -59,6 +59,7 @@
     <Compile Include="Codes\OOP\DEFF.cs" />
     <Compile Include="Codes\OOP\DEFV.cs" />
     <Compile Include="Codes\OOP\ENDDEF.cs" />
+    <Compile Include="Codes\OOP\LDTHIS.cs" />
     <Compile Include="Codes\Registers\LD.cs" />
     <Compile Include="Codes\Registers\MOV.cs" />
     <Compile Include="Codes\Registers\MOVS.cs" />

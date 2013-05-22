@@ -6,6 +6,7 @@ DEFF "do" :test.do
 JMP :test-end
 
 test.do:
+LDTHIS
 RET
 
 test-end:
