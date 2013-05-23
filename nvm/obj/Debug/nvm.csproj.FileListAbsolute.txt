@@ -1,0 +1,20 @@
+J:\Desktop\nvm\nvm\bin\Debug\nvm.exe.config
+J:\Desktop\nvm\nvm\bin\Debug\nvm.exe
+J:\Desktop\nvm\nvm\bin\Debug\nvm.pdb
+J:\Desktop\nvm\nvm\obj\Debug\nvm.csprojResolveAssemblyReference.cache
+J:\Desktop\nvm\nvm\obj\Debug\nvm.exe
+J:\Desktop\nvm\nvm\obj\Debug\nvm.pdb
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\bin\Debug\nvm.exe.config
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\obj\Debug\nvm.exe
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\obj\Debug\nvm.pdb
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\obj\Debug\nvm.csprojResolveAssemblyReference.cache
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\bin\Debug\nvm.exe
+C:\Users\Andreas\Documents\Visual Studio 2012\Projects\nvm\nvm\bin\Debug\nvm.pdb
+E:\Desktop\nvm\nvm\bin\Debug\nvm.exe.config
+E:\Desktop\nvm\nvm\obj\Debug\nvm.exe
+E:\Desktop\nvm\nvm\obj\Debug\nvm.pdb
+E:\Desktop\nvm\nvm\obj\Debug\nvm.csprojResolveAssemblyReference.cache
+E:\Desktop\nvm\nvm\bin\Debug\nvm.exe
+E:\Desktop\nvm\nvm\bin\Debug\nvm.pdb
+E:\Desktop\nvm\nvm\bin\Debug\test.txt
+E:\Desktop\nvm\nvm\bin\Debug\testcode.txt
