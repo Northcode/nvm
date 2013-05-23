@@ -115,7 +115,27 @@ namespace nvmv2
                 new OpCode() {
                     Name = "STLOC", BYTECODE = 0x08,
                     Run = (m) => {
-
+                        int v = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        object o = m.stack.Pop();
+                        uint aaddr = m.Alloc(o);
+                        m.locals[v] = aaddr;
+                    }
+                },
+                new OpCode() {
+                    Name = "FREELOC", BYTECODE = 0x09,
+                    Run = (m) => {
+                        int v = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        uint addr = m.locals[v];
+                        byte t = m.Memory.Read(addr);
+                        if(t == ValueTypeCodes.BYTE)
+                        {
+                            m.Free(addr, 2);
+                        }
+                        else if(t == ValueTypeCodes.INT)
+                        {
+                            m.Free(addr, 5);
+                        }
+                        m.locals[v] = 0;
                     }
                 }
             };
@@ -125,15 +145,77 @@ namespace nvmv2
         {
             if (val is byte)
             {
-                for (int i = 0; i < freeList.Count; i++)
-                {
+                int i = AllocFindChunk(2);
+                uint addr = freeList[i].chunkstart;
+                uint naddr = addr + 2;
+                freeList[i].chunkstart = naddr;
+                Memory.Write(addr, ValueTypeCodes.BYTE);
+                Memory.Write(addr + 1, (byte)val);
+                return addr;
+            }
+            else if (val is int)
+            {
+                int i = AllocFindChunk(5);
+                uint addr = freeList[i].chunkstart;
+                uint naddr = addr + 5;
+                freeList[i].chunkstart = naddr;
+                Memory.Write(addr, ValueTypeCodes.INT);
+                Memory.Write(addr + 1, (int)val);
+                return addr;
+            }
+            throw new Exception("Allocation failed!");
+        }
 
+        private int AllocFindChunk(int size)
+        {
+            for (int i = 0; i < freeList.Count; i++)
+            {
+                if (freeList[i].size > size)
+                {
+                    return i;
                 }
             }
+            throw new OutOfMemoryException("No free chunks found large enough");
         }
 
         public void Free(uint address,int size)
         {
+            MemChunk freechunk = new MemChunk() { chunkstart = address, size = size };
+            freeList.Add(freechunk);
+            freeList = freeList.OrderBy(c => c.chunkstart).ToList();
+            MergeChunks();
+        }
+
+        public void MergeChunks()
+        {
+            if (freeList.Count > 1)
+            {
+                MemChunk last = null;
+                bool b = false;
+                for (int i = 0; i < freeList.Count; i++)
+                {
+                    b = false;
+                    if (last != null)
+                    {
+                        if (last.chunkstart + last.size == freeList[i].chunkstart)
+                        {
+                            last.size = last.size + freeList[i].size;
+                            freeList.RemoveAt(i);
+                            i--;
+                            b = true;
+                        }
+                        else if (freeList[i].chunkstart + freeList[i].size == last.chunkstart)
+                        {
+                            freeList[i].size = freeList[i].size + last.size;
+                            freeList.RemoveAt(i - 1);
+                        }
+                    }
+                    if (!b)
+                    {
+                        last = freeList[i];
+                    }
+                }
+            }
         }
     }
 
