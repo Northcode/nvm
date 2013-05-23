@@ -1,4 +1,6 @@
-﻿using nvm.Objects;
+﻿using System;
+/*
+using nvm.Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,6 +14,7 @@ namespace nvm
     {
         public static void Main(string[] args)
         {
+            
             VirtualMachine.InitOpCodes();
             Assembler a = new Assembler();
 
@@ -25,6 +28,30 @@ namespace nvm
             vm.DEBUG = false;
 
             vm.Run();
+            
+
+        }
+    }
+}
+*/
+using System.IO;
+namespace nvmv2
+{
+    class Startup
+    {
+        static void Main(string[] args)
+        {
+            VM.InitOpcodes();
+
+            Assembler a = new Assembler();
+            a.code = File.ReadAllText("testcode.txt");
+            byte[] code = a.Assemble();
+
+            Console.Clear();
+
+            VM v = new VM(code);
+            v.Run();
+            Console.ReadKey();
         }
     }
 }
