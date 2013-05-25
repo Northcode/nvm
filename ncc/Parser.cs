@@ -115,13 +115,6 @@ namespace ncc
                 i++;
                 return new free() { varname = vname };
             }
-            else if (tokens[i].type == TokenType.word && tokens[i].val as string == "asm")
-            {
-                i++;
-                string asm = tokens[i].val as string;
-                i++;
-                return new asm() { asmtxt = asm };
-            }
             else
             {
                 return ParseExpr();
@@ -158,6 +151,13 @@ namespace ncc
                 }
                 i++;
                 e = new fcall() { fname = fname, args = args.ToArray() };
+            }
+            else if (tokens[i].type == TokenType.word && tokens[i].val as string == "asm")
+            {
+                i++;
+                string asm = tokens[i].val as string;
+                i++;
+                return new asm() { asmtxt = asm };
             }
             else if (tokens[i].type == TokenType.word)
             {

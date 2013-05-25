@@ -1,12 +1,17 @@
 ﻿test()
-	@b = prt()
-	prt(@b)
+	prt("Hello!")
+	a = input()
+	prt(a)
 	term()
 end
 
 prt(a)
 	a
 	asm "SYSF_PRINT"
+end
+
+input()
+	a = asm "SYSF_READLN"
 end
 
 term()

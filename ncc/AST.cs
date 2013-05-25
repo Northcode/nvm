@@ -221,7 +221,7 @@ namespace ncc
             }
         }
 
-        class asm : STMT
+        class asm : EXPR
         {
             public string asmtxt;
 
