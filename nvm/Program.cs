@@ -1,5 +1,4 @@
-﻿using System;
-/*
+﻿/*
 using nvm.Objects;
 using System;
 using System.Collections.Generic;
@@ -34,6 +33,7 @@ namespace nvm
     }
 }
 */
+using System;
 using System.IO;
 namespace nvmv2
 {

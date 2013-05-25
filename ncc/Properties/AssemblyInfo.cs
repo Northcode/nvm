@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("nvm")]
-[assembly: AssemblyDescription("Northcode Virtual Machine")]
+[assembly: AssemblyTitle("ncc")]
+[assembly: AssemblyDescription("Northcode Compiler")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Northcode")]
-[assembly: AssemblyProduct("nvm")]
+[assembly: AssemblyProduct("ncc")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -17,10 +17,10 @@ using System.Runtime.InteropServices;
 // Setting ComVisible to false makes the types in this assembly not visible 
 // to COM components.  If you need to access a type in this assembly from 
 // COM, set the ComVisible attribute to true on that type.
-[assembly: ComVisible(true)]
+[assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("6cd41dd1-aeac-4e68-a96e-cdbf7316394a")]
+[assembly: Guid("23b8695d-a749-42bd-8087-900b1cc1061c")]
 
 // Version information for an assembly consists of the following four values:
 //

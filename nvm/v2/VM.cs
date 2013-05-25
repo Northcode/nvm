@@ -137,6 +137,267 @@ namespace nvmv2
                         }
                         m.locals[v] = 0;
                     }
+                },
+                new OpCode() {
+                    Name = "LDLOC", BYTECODE = 0x0a,
+                    Run = (m) => {
+                        int l = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        uint addr = m.locals[l];
+                        byte t = m.Memory.Read(addr);
+                        if(t == ValueTypeCodes.BYTE)
+                        {
+                            byte v = m.Memory.Read(addr + 1);
+                            m.stack.Push(v);
+                        }
+                        else if(t == ValueTypeCodes.INT)
+                        {
+                            int v = m.Memory.ReadInt(addr + 1);
+                            m.stack.Push(v);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "LDPTR", BYTECODE = 0x0b,
+                    Run = (m) => {
+                        int l = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        uint addr = m.locals[l];
+                        m.stack.Push(addr);
+                    }
+                },
+                new OpCode() {
+                    Name = "STPTR", BYTECODE = 0x0c,
+                    Run = (m) => {
+                        int l = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        uint addr = (uint)m.stack.Pop();
+                        m.locals[l] = addr;
+                    }
+                },
+                new OpCode() {
+                    Name = "ARRAY", BYTECODE = 0x0d,
+                    Run = (m) => {
+                        int size = (int)m.stack.Pop();
+                        uint addr = m.MAlloc(size * 4 + 4);
+                        m.Memory.Write(addr, size);
+                        m.stack.Push(addr);
+                    }
+                },
+                new OpCode() {
+                    Name = "FREEARRAY", BYTECODE = 0x0e,
+                    Run = (m) => {
+                        uint addr = (uint)m.stack.Pop();
+                        int size = m.Memory.ReadInt(addr);
+                        m.Free(addr, size * 4 + 4);
+                    }
+                },
+                new OpCode() {
+                    Name = "ST_ELEM", BYTECODE = 0x0f,
+                    Run = (m) => {
+                        object o = m.stack.Pop();
+                        int index = (int)m.stack.Pop();
+                        uint array = (uint)m.stack.Pop();
+                        uint addr = m.Alloc(o);
+                        m.Memory.Write((uint)(array + 4 + index * 4),addr);
+                    }
+                },
+                new OpCode() {
+                    Name = "ST_ELEM_PTR", BYTECODE = 0x10,
+                    Run = (m) => {
+                        uint paddr = (uint)m.stack.Pop();
+                        int index = (int)m.stack.Pop();
+                        uint array = (uint)m.stack.Pop();
+                        m.Memory.Write((uint)(array + 4 + index * 4),paddr);
+                    }
+                },
+                new OpCode() {
+                    Name = "LD_ELEM", BYTECODE = 0x11,
+                    Run = (m) => {
+                        int index = (int)m.stack.Pop();
+                        uint array = (uint)m.stack.Pop();
+                        uint raddr = m.Memory.ReadUInt((uint)(array + 4 + index * 4));
+                        m.stack.Push(raddr);
+                    }
+                },
+                new OpCode() {
+                    Name = "LDADDR", BYTECODE = 0x12,
+                    Run = (m) => {
+                        uint addr = (uint)m.stack.Pop();
+                        byte t = m.Memory.Read(addr);
+                        if(t == ValueTypeCodes.BYTE)
+                        {
+                            byte v = (byte)m.Memory.Read(addr + 1);
+                            m.stack.Push(v);
+                        }
+                        else if (t == ValueTypeCodes.INT)
+                        {
+                            int v = (int)m.Memory.ReadInt(addr + 1);
+                            m.stack.Push(v);
+                        }
+                        else if (t == ValueTypeCodes.STRING)
+                        {
+                            string v = (string)m.Memory.ReadString(addr + 1);
+                            m.stack.Push(v);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "MALLOC", BYTECODE = 0x13,
+                    Run = (m) => {
+                        int size = (int)m.stack.Pop();
+                        uint addr = m.MAlloc(size);
+                        m.stack.Push(addr);
+                    }
+                },
+                new OpCode() {
+                    Name = "FREE", BYTECODE = 0x14,
+                    Run = (m) => {
+                        int size = (int)m.stack.Pop();
+                        uint addr = (uint)m.stack.Pop();
+                        m.Free(addr, size);
+                    }
+                },
+                new OpCode() {
+                    Name = "SYSF_PRINT", BYTECODE = 0x15,
+                    Run = (m) => {
+                        object o = m.stack.Pop();
+                        Console.Write(o);
+                    }
+                },
+                new OpCode() {
+                    Name = "SYSF_READLN", BYTECODE = 0x16,
+                    Run = (m) => {
+                        string s = Console.ReadLine();
+                        m.stack.Push(s);
+                    }
+                },
+                new OpCode() {
+                    Name = "ADD", BYTECODE = 0x17,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            byte c = (byte)((byte)a + (byte)b);
+                            m.stack.Push(c);
+                        }
+                        else if(a is int && b is int)
+                        {
+                            int c = (int)a + (int)b;
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "SUB", BYTECODE = 0x18,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            byte c = (byte)((byte)a - (byte)b);
+                            m.stack.Push(c);
+                        }
+                        else if(a is int && b is int)
+                        {
+                            int c = (int)a - (int)b;
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "MUL", BYTECODE = 0x19,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            byte c = (byte)((byte)a * (byte)b);
+                            m.stack.Push(c);
+                        }
+                        else if(a is int && b is int)
+                        {
+                            int c = (int)a * (int)b;
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "DIV", BYTECODE = 0x1a,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            byte c = (byte)((byte)a / (byte)b);
+                            m.stack.Push(c);
+                        }
+                        else if(a is int && b is int)
+                        {
+                            int c = (int)a / (int)b;
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "MOD", BYTECODE = 0x1b,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            byte c = (byte)((byte)a % (byte)b);
+                            m.stack.Push(c);
+                        }
+                        else if(a is int && b is int)
+                        {
+                            int c = (int)a % (int)b;
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "OR", BYTECODE = 0x1c,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            bool ba = ((byte)a == 1);
+                            bool bb = ((byte)b == 1);
+                            bool bc = ba || bb;
+                            byte c = (byte)(bc ? 1 : 0);
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "AND", BYTECODE = 0x1d,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            bool ba = ((byte)a == 1);
+                            bool bb = ((byte)b == 1);
+                            bool bc = ba && bb;
+                            byte c = (byte)(bc ? 1 : 0);
+                            m.stack.Push(c);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "XOR", BYTECODE = 0x1e,
+                    Run = (m) => {
+                        object b = m.stack.Pop();
+                        object a = m.stack.Pop();
+                        if(a is byte && b is byte)
+                        {
+                            bool ba = ((byte)a == 1);
+                            bool bb = ((byte)b == 1);
+                            bool bc = ba ^ bb;
+                            byte c = (byte)(bc ? 1 : 0);
+                            m.stack.Push(c);
+                        }
+                    }
                 }
             };
         }
@@ -163,7 +424,24 @@ namespace nvmv2
                 Memory.Write(addr + 1, (int)val);
                 return addr;
             }
+            else if (val is string)
+            {
+                int i = AllocFindChunk((val as string).Length + 2);
+                uint addr = freeList[i].chunkstart;
+                uint naddr = (uint)(addr + (val as string).Length + 2);
+                freeList[i].chunkstart = naddr;
+                Memory.Write(addr, ValueTypeCodes.STRING);
+                Memory.Write(addr + 1, (val as string));
+                return addr;
+            }
             throw new Exception("Allocation failed!");
+        }
+
+        public uint MAlloc(int size)
+        {
+            int i = AllocFindChunk(size);
+            uint addr = freeList[i].chunkstart;
+            return addr;
         }
 
         private int AllocFindChunk(int size)

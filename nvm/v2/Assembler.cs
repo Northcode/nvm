@@ -42,6 +42,26 @@ namespace nvmv2
                         byte[] vals = BitConverter.GetBytes(i);
                         result.AddRange(vals);
                     }
+                    else if (word == "byte")
+                    {
+                        result.Add(ValueTypeCodes.BYTE);
+                    }
+                    else if (word == "int")
+                    {
+                        result.Add(ValueTypeCodes.INT);
+                    }
+                    else if (word == "string")
+                    {
+                        result.Add(ValueTypeCodes.STRING);
+                    }
+                    else if (word == "true")
+                    {
+                        result.Add(1);
+                    }
+                    else if (word == "false")
+                    {
+                        result.Add(0);
+                    }
                     else if (trimmed.StartsWith("h"))
                     {
                         string sub = trimmed.Substring(1);
@@ -75,7 +95,8 @@ namespace nvmv2
                     }
                     else
                     {
-                        byte[] bytea = Encoding.ASCII.GetBytes(word);
+                        string nword = word.Replace("\\n", "\n").Replace("\\'","\"");
+                        byte[] bytea = Encoding.ASCII.GetBytes(nword);
                         result.AddRange(bytea);
                         result.Add((byte)0x00);
                     }
