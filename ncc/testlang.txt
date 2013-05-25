@@ -1,0 +1,14 @@
+﻿test()
+	@b = prt()
+	prt(@b)
+	term()
+end
+
+prt(a)
+	a
+	asm "SYSF_PRINT"
+end
+
+term()
+	asm "END"
+end

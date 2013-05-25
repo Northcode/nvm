@@ -1,0 +1,41 @@
+﻿DEF "test"
+DEFV "a" "int32"
+
+DEFF "do" :test.do
+
+JMP :test-end
+
+test.do:
+LDTHIS
+RET
+
+test-end:
+ENDDEF
+
+start:
+LD h00 h01
+DBG
+LODSB "Hello World!"
+CALL :println
+NOP
+CALL :readkey
+NOP
+JMP :end
+
+println:
+LD h01 h01
+INT h00
+RET
+
+readkey:
+LD h01 h08
+INT h00
+RET
+
+readline:
+LD h01 h09
+INT h00
+RET
+
+end:
+END

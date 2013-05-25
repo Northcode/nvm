@@ -6,9 +6,9 @@ using System.Text;
 
 namespace nvmv2
 {
-    class Assembler
+    public class Assembler
     {
-        internal string code { get; set; }
+        public string code { get; set; }
 
         internal Dictionary<string, uint> labels;
         internal List<Tuple<int, string>> labelcalls;
@@ -54,6 +54,10 @@ namespace nvmv2
                     {
                         result.Add(ValueTypeCodes.STRING);
                     }
+                    else if (word == "uint")
+                    {
+                        result.Add(ValueTypeCodes.UINT);
+                    }
                     else if (word == "true")
                     {
                         result.Add(1);
@@ -95,7 +99,7 @@ namespace nvmv2
                     }
                     else
                     {
-                        string nword = word.Replace("\\n", "\n").Replace("\\'","\"");
+                        string nword = word.Replace("\\n", "\n").Replace("\\'", "\"");
                         byte[] bytea = Encoding.ASCII.GetBytes(nword);
                         result.AddRange(bytea);
                         result.Add((byte)0x00);

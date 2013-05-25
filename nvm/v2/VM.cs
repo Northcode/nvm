@@ -56,7 +56,7 @@ namespace nvmv2
                     Name = "CALL", BYTECODE = 0x02,
                     Run = (m) => { 
                         uint addr = m.Memory.ReadUInt(m.IP); m.IP += 4;
-                        m.callstack.Push(new Tuple<uint, int>(addr, -1));
+                        m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
                         m.IP = addr;
                     }
                 }, //-------------------
@@ -97,8 +97,11 @@ namespace nvmv2
                     Run = (m) => { m.stack.Pop(); }
                 }, //-------------------
                 new OpCode() {
-                    Name = "META", BYTECODE = 0x05,
-                    Run = (m) => { }
+                    Name = "LOCALCNT", BYTECODE = 0x05,
+                    Run = (m) => {
+                        int c = m.Memory.ReadInt(m.IP); m.IP += 4;
+                        m.locals = new uint[c];
+                    }
                 },//-------------------
                 new OpCode() {
                     Name = "END", BYTECODE = 0x06,
@@ -152,6 +155,11 @@ namespace nvmv2
                         else if(t == ValueTypeCodes.INT)
                         {
                             int v = m.Memory.ReadInt(addr + 1);
+                            m.stack.Push(v);
+                        }
+                        else if(t == ValueTypeCodes.UINT)
+                        {
+                            uint v = m.Memory.ReadUInt(addr + 1);
                             m.stack.Push(v);
                         }
                     }
@@ -398,6 +406,13 @@ namespace nvmv2
                             m.stack.Push(c);
                         }
                     }
+                },
+                new OpCode() {
+                    Name = "RET", BYTECODE = 0x1f,
+                    Run = (m) => {
+                        Tuple<uint, int> c = m.callstack.Pop();
+                        m.IP = c.Item1;
+                    }
                 }
             };
         }
@@ -422,6 +437,16 @@ namespace nvmv2
                 freeList[i].chunkstart = naddr;
                 Memory.Write(addr, ValueTypeCodes.INT);
                 Memory.Write(addr + 1, (int)val);
+                return addr;
+            }
+            else if (val is uint)
+            {
+                int i = AllocFindChunk(5);
+                uint addr = freeList[i].chunkstart;
+                uint naddr = addr + 5;
+                freeList[i].chunkstart = naddr;
+                Memory.Write(addr, ValueTypeCodes.UINT);
+                Memory.Write(addr + 1, (uint)val);
                 return addr;
             }
             else if (val is string)

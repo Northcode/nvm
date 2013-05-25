@@ -1,1 +1,4 @@
-﻿this is a "test with \"strings\" and " with numbers 5 5.3 and bytes 0x3a hello
+﻿main:
+PUSH string "\'Hello World!\'\n"
+SYSF_PRINT
+END

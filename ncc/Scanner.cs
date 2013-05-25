@@ -10,6 +10,11 @@ namespace ncc
     {
         public TokenType type { get; set; }
         public object val { get; set; }
+
+        public override string ToString()
+        {
+            return "{ type: " + type.ToString() + " ; val: " + val.ToString() + " } ";
+        }
     }
 
     public enum TokenType
@@ -78,10 +83,10 @@ namespace ncc
                         tokens.Add(new Token() { type = TokenType.int_lit, val = n });
                     }
                 }
-                else if (char.IsLetter(code[i]))
+                else if (char.IsLetter(code[i]) || code[i] == '@')
                 {
                     StringBuilder strb = new StringBuilder();
-                    while (i < code.Length && char.IsLetterOrDigit(code[i]))
+                    while (i < code.Length && (char.IsLetterOrDigit(code[i]) || code[i] == '@' || code[i] == '.' || code[i] == '_'))
                     {
                         strb.Append(code[i]);
                         i++;
@@ -98,6 +103,7 @@ namespace ncc
                     {
                         tokens.Add(new Token() { type = TokenType.word, val = strb.ToString() });
                     }
+                    i--;
                 }
                 else if (code[i] == '"')
                 {
@@ -129,6 +135,18 @@ namespace ncc
                 else if (code[i] == '\n')
                 {
                     tokens.Add(new Token() { type = TokenType.newline, val = "\n" });
+                }
+                else if (code[i] == ' ')
+                {
+                    
+                }
+                else if (code[i] == '\t')
+                {
+
+                }
+                else if (code[i] == '\r')
+                {
+
                 }
                 else
                 {

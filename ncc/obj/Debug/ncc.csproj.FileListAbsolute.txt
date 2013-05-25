@@ -5,3 +5,7 @@ E:\Desktop\nvm\ncc\obj\Debug\ncc.csprojResolveAssemblyReference.cache
 E:\Desktop\nvm\ncc\obj\Debug\ncc.exe
 E:\Desktop\nvm\ncc\obj\Debug\ncc.pdb
 E:\Desktop\nvm\ncc\bin\Debug\testcode.txt
+E:\Desktop\nvm\ncc\bin\Debug\test.txt
+E:\Desktop\nvm\ncc\bin\Debug\nvm.exe
+E:\Desktop\nvm\ncc\bin\Debug\nvm.pdb
+E:\Desktop\nvm\ncc\bin\Debug\testlang.txt
