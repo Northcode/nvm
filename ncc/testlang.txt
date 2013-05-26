@@ -1,17 +1,72 @@
 ﻿test()
-	prt("Hello!")
-	a = input()
-	prt(a)
+	a = "Hello "
+	b = "World!"
+	strcat(@a,b)
 	term()
 end
 
 prt(a)
 	a
+	prts()
+end
+
+prts()
 	asm "SYSF_PRINT"
 end
 
-input()
-	a = asm "SYSF_READLN"
+m_alloc(size)
+    size
+    asm "MALLOC"
+end
+
+m_free(addr,size)
+    addr
+    size
+    asm "FREE"
+end
+
+m_write(addr,o)
+    o
+    addr
+    asm "MEMW"
+end
+
+m_read(addr,type)
+    addr
+    type
+    asm "MEMR"
+end
+
+strcat(@a,b)
+	la = sizeof(a)
+	lb = sizeof(b)
+	prt(la)
+	prt(lb)
+	l = add(la,lb)
+	l = sub(l,1)
+	prt(l)
+	addr = m_alloc(l)
+	m_write(addr,0x01)
+	na = add(addr,1)
+	m_write(na,a)
+	ln = sub(la,1)
+	na = add(ma,ln)
+	m_write(na,b)
+	ns = m_read(addr,0x07)
+	m_free(addr,l)
+	ns
+end
+
+sizeof(o)
+	o asm "SIZEOF"
+end
+
+addp(@a,@b)
+	a b	a = asm "ADD"
+end
+
+add(a,b)
+	a b asm "ADD"
 end
 
 term()

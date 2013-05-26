@@ -54,6 +54,7 @@ namespace ncc
                         strb.Append(code[i]);
                         i++;
                     }
+                    i--;
                     if (code[i] == '.')
                     {
                         strb.Append('.');
@@ -63,6 +64,7 @@ namespace ncc
                             strb.Append(code[i]);
                             i++;
                         }
+                        i--;
                         float f = (float)Convert.ToDecimal(strb.ToString());
                         tokens.Add(new Token() { type = TokenType.float_lit, val = f });
                     }
@@ -83,7 +85,7 @@ namespace ncc
                         tokens.Add(new Token() { type = TokenType.int_lit, val = n });
                     }
                 }
-                else if (char.IsLetter(code[i]) || code[i] == '@')
+                else if (char.IsLetter(code[i]) || code[i] == '@' || code[i] == '_' || code[i] == '.')
                 {
                     StringBuilder strb = new StringBuilder();
                     while (i < code.Length && (char.IsLetterOrDigit(code[i]) || code[i] == '@' || code[i] == '.' || code[i] == '_'))
@@ -114,6 +116,10 @@ namespace ncc
                     r = (code[i] != '"');
                     while (r)
                     {
+                        if (escaped && code[i] == 'n')
+                        {
+                            strb.Append("\\");
+                        }
                         escaped = false;
                         if (code[i] == '\\')
                         {
@@ -129,7 +135,6 @@ namespace ncc
                             r = (code[i] != '"');
                         }
                     }
-                    i++;
                     tokens.Add(new Token() { type = TokenType.string_lit, val = strb.ToString() });
                 }
                 else if (code[i] == '\n')

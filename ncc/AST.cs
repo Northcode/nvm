@@ -149,11 +149,22 @@ namespace ncc
 
                 foreach (string arg in args)
                 {
-                    if (!VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname + "." + arg))
+                    if (arg.StartsWith("@"))
                     {
-                        VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + fname + "." + arg, VarnameLocalizer.locals.Count);
+                        if (!VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1)))
+                        {
+                            VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1), VarnameLocalizer.locals.Count);
+                        }
+                        sb.AppendLine("STPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1)]);
                     }
-                    sb.AppendLine("STLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname + "." + arg]);
+                    else
+                    {
+                        if (!VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname + "." + arg))
+                        {
+                            VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + fname + "." + arg, VarnameLocalizer.locals.Count);
+                        }
+                        sb.AppendLine("STLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname + "." + arg]);
+                    }
                 }
 
                 foreach (STMT st in body)

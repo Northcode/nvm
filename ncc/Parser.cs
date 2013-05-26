@@ -108,7 +108,7 @@ namespace ncc
                 EXPR val = ParseExpr();
                 return new ret() { val = val };
             }
-            else if (tokens[i].type == TokenType.word && tokens[i].val as string == "free")
+            else if (tokens[i].type == TokenType.word && tokens[i].val as string == ".free")
             {
                 i++;
                 string vname = tokens[i].val as string;
@@ -147,7 +147,15 @@ namespace ncc
                 List<EXPR> args = new List<EXPR>();
                 while (!(tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')'))
                 {
-                    args.Add(ParseExpr());
+                    EXPR ex = ParseExpr();
+                    if (ex != null)
+                    {
+                        args.Add(ex);
+                    }
+                    else
+                    {
+                        i++;
+                    }
                 }
                 i++;
                 e = new fcall() { fname = fname, args = args.ToArray() };

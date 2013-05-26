@@ -50,14 +50,31 @@ namespace nvmv2
                 },
                 new OpCode() { 
                     Name = "JMP", BYTECODE = 0x01,
-                    Run = (m) => { uint addr = m.Memory.ReadUInt(m.IP); m.IP = addr; }
+                    Run = (m) => {
+                        uint addr = m.Memory.ReadUInt(m.IP); m.IP += 4;
+                        if(addr != 0) 
+                        {
+                            m.IP = addr;
+                        }
+                        else
+                        {
+                            Console.WriteLine("ERROR: CANNOT JMP TO ADDRESS 0");
+                        }
+                    }
                 }, //-------------------
                 new OpCode() {
                     Name = "CALL", BYTECODE = 0x02,
                     Run = (m) => { 
                         uint addr = m.Memory.ReadUInt(m.IP); m.IP += 4;
-                        m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
-                        m.IP = addr;
+                        if(addr != 0)
+                        {
+                            m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
+                            m.IP = addr;
+                        }
+                        else
+                        {
+                            Console.WriteLine("ERROR: CANNOT JMP TO ADDRESS 0");
+                        }
                     }
                 }, //-------------------
                 new OpCode() {
@@ -161,6 +178,11 @@ namespace nvmv2
                         {
                             uint v = m.Memory.ReadUInt(addr + 1);
                             m.stack.Push(v);
+                        }
+                        else if(t == ValueTypeCodes.STRING)
+                        {
+                            string s = m.Memory.ReadString(addr + 1);
+                            m.stack.Push(s);
                         }
                     }
                 },
@@ -412,6 +434,74 @@ namespace nvmv2
                     Run = (m) => {
                         Tuple<uint, int> c = m.callstack.Pop();
                         m.IP = c.Item1;
+                    }
+                },
+                new OpCode() {
+                    Name = "MEMW", BYTECODE = 0x20,
+                    Run = (m) => {
+                        uint u = (uint)m.stack.Pop();
+                        object o = m.stack.Pop();
+                        if (o is byte)
+                        {
+                            m.Memory.Write(u, (byte)o);
+                        }
+                        else if (o is int)
+                        {
+                            m.Memory.Write(u, (int)o);
+                        }
+                        else if (o is uint)
+                        {
+                            m.Memory.Write(u, (uint)o);
+                        }
+                        else if (o is string)
+                        {
+                            m.Memory.Write(u, (string)o);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "MEMR", BYTECODE = 0x21,
+                    Run = (m) => {
+                        byte t = (byte)m.stack.Pop();
+                        uint u = (uint)m.stack.Pop();
+                        if (t == ValueTypeCodes.BYTE)
+                        {
+                            byte b = m.Memory.Read(u);
+                            m.stack.Push(b);
+                        }
+                        else if (t == ValueTypeCodes.INT)
+                        {
+                            int i = m.Memory.ReadInt(u);
+                            m.stack.Push(i);
+                        }
+                        else if (t == ValueTypeCodes.UINT)
+                        {
+                            uint i = m.Memory.ReadUInt(u);
+                            m.stack.Push(i);
+                        }
+                        else if (t == ValueTypeCodes.STRING)
+                        {
+                            string i = m.Memory.ReadString(u);
+                            m.stack.Push(i);
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "SIZEOF", BYTECODE = 0x22,
+                    Run = (m) => {
+                        object o = m.stack.Pop();
+                        if (o is byte)
+                        {
+                            m.stack.Push(1);
+                        }
+                        else if (o is int)
+                        {
+                            m.stack.Push(4);
+                        }
+                        else if (o is string)
+                        {
+                            m.stack.Push((o as string).Length + 1);
+                        }
                     }
                 }
             };

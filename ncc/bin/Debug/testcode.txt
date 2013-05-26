@@ -1,4 +1,78 @@
-﻿main:
-PUSH string "\'Hello World!\'\n"
+﻿LOCALCNT 14
+test:
+PUSH string "Hello "
+
+STLOC 0
+PUSH string "World!"
+
+STLOC 1
+LDLOC 1
+
+LDPTR 0
+
+CALL :strcat
+CALL :term
+RET
+prt:
+STLOC 2
+LDLOC 2
+CALL :prts
+RET
+prts:
 SYSF_PRINT
+RET
+
+strcat:
+
+STPTR 3
+STLOC 4
+LDLOC 3
+
+CALL :sizeof
+
+STLOC 5
+LDLOC 4
+
+CALL :sizeof
+
+STLOC 6
+LDLOC 6
+
+LDLOC 5
+
+CALL :add
+
+STLOC 7
+LDLOC 7
+
+CALL :prt
+RET
+sizeof:
+STLOC 8
+LDLOC 8
+SIZEOF
+
+STLOC 9
+RET
+addp:
+STPTR 10
+STPTR 11
+LDLOC 10
+LDLOC 11
+ADD
+
+FREELOC 10
+STLOC 10
+RET
+add:
+STLOC 12
+STLOC 13
+LDLOC 12
+LDLOC 13
+ADD
+RET
+term:
+END
+RET
+
 END

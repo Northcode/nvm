@@ -66,6 +66,20 @@ namespace nvmv2
                     {
                         result.Add(0);
                     }
+                    else if (VM.opcodes.Any(p => p.Name == trimmed))
+                    {
+                        OpCode op = VM.opcodes.First(p => p.Name == trimmed);
+                        result.Add(op.BYTECODE);
+                    }
+                    else if (word.EndsWith(":"))
+                    {
+                        labels.Add(word.Substring(0, word.Length - 1), (uint)result.Count);
+                    }
+                    else if (word.StartsWith(":"))
+                    {
+                        labelcalls.Add(new Tuple<int, string>(result.Count, word.Substring(1)));
+                        result.AddRange(new byte[4]);
+                    }
                     else if (trimmed.StartsWith("h"))
                     {
                         string sub = trimmed.Substring(1);
@@ -82,20 +96,6 @@ namespace nvmv2
                             byte[] vals = BitConverter.GetBytes(u);
                             result.AddRange(vals);
                         }
-                    }
-                    else if (VM.opcodes.Any(p => p.Name == trimmed))
-                    {
-                        OpCode op = VM.opcodes.First(p => p.Name == trimmed);
-                        result.Add(op.BYTECODE);
-                    }
-                    else if (word.EndsWith(":"))
-                    {
-                        labels.Add(word.Substring(0, word.Length - 1), (uint)result.Count);
-                    }
-                    else if (word.StartsWith(":"))
-                    {
-                        labelcalls.Add(new Tuple<int, string>(result.Count, word.Substring(1)));
-                        result.AddRange(new byte[4]);
                     }
                     else
                     {
