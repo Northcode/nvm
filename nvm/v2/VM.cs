@@ -503,6 +503,77 @@ namespace nvmv2
                             m.stack.Push((o as string).Length + 1);
                         }
                     }
+                },
+                new OpCode() {
+                    Name = "CAST", BYTECODE = 0x23,
+                    Run = (m) => {
+                        byte t = (byte)m.stack.Pop();
+                        object o = m.stack.Pop();
+                        if (o is byte)
+                        {
+                            if (t == ValueTypeCodes.INT)
+                            {
+                                int i = (int)((byte)o);
+                                m.stack.Push(i);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.UINT)
+                            {
+                                uint u = (uint)((byte)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.STRING)
+                            {
+                                string u = ((byte)o).ToString();
+                                m.stack.Push(u);
+                                return;
+                            }
+                        }
+                        else if (o is int)
+                        {
+                            if (t == ValueTypeCodes.BYTE)
+                            {
+                                byte i = (byte)((int)o);
+                                m.stack.Push(i);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.UINT)
+                            {
+                                uint u = (uint)((int)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.STRING)
+                            {
+                                string u = ((int)o).ToString();
+                                m.stack.Push(u);
+                                return;
+                            }
+                        }
+                        else if (o is string)
+                        {
+                            if (t == ValueTypeCodes.BYTE)
+                            {
+                                byte i = Convert.ToByte((string)o);
+                                m.stack.Push(i);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.UINT)
+                            {
+                                uint u = Convert.ToUInt32((string)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.INT)
+                            {
+                                int u = Convert.ToInt32((string)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                        }
+                        m.stack.Push(o);
+                    }
                 }
             };
         }

@@ -55,7 +55,7 @@ namespace ncc
                         i++;
                     }
                     i--;
-                    if (code[i] == '.')
+                    if (code[i + 1] == '.')
                     {
                         strb.Append('.');
                         i++;
@@ -68,13 +68,13 @@ namespace ncc
                         float f = (float)Convert.ToDecimal(strb.ToString());
                         tokens.Add(new Token() { type = TokenType.float_lit, val = f });
                     }
-                    else if (code[i] == 'x')
+                    else if (code[i + 1] == 'x')
                     {
-                        i++;
+                        i += 2;
+                        strb.Clear();
                         strb.Append(code[i]);
                         i++;
                         strb.Append(code[i]);
-                        i++;
                         byte b = byte.Parse(strb.ToString(), System.Globalization.NumberStyles.HexNumber);
                         tokens.Add(new Token() { type = TokenType.byte_lit, val = b });
                     }

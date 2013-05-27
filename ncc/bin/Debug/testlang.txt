@@ -20,21 +20,27 @@ m_alloc(size)
 end
 
 m_free(addr,size)
-    addr
+    cast(addr,0x04)
     size
     asm "FREE"
 end
 
 m_write(addr,o)
     o
-    addr
+    cast(addr,0x04)
     asm "MEMW"
 end
 
 m_read(addr,type)
-    addr
+    cast(addr,0x04)
     type
     asm "MEMR"
+end
+
+cast(a,t)
+	a
+	t
+	asm "CAST"
 end
 
 strcat(@a,b)
@@ -66,7 +72,9 @@ addp(@a,@b)
 end
 
 add(a,b)
-	a b asm "ADD"
+	cast(a,0x03)
+	cast(b,0x03)
+	asm "ADD"
 end
 
 term()
