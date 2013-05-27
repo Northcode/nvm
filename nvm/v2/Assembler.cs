@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nvmv2
+namespace nvm.v2
 {
     public class Assembler
     {

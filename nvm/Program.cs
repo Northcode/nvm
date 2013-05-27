@@ -35,7 +35,7 @@ namespace nvm
 */
 using System;
 using System.IO;
-namespace nvmv2
+namespace nvm.v2
 {
     class Startup
     {
