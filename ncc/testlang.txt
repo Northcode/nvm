@@ -1,4 +1,8 @@
-﻿test()
+﻿int = 0x03
+uint = 0x04
+string = 0x07
+
+test()
 	a = "Hello "
 	b = "World!"
 	strcat(@a,b)
@@ -20,7 +24,7 @@ m_alloc(size)
 end
 
 m_free(addr,size)
-    cast(addr,0x04)
+    cast(addr,uint)
     size
     asm "FREE"
 end
@@ -52,13 +56,13 @@ strcat(@a,b)
 	l = sub(l,1)
 	prt(l)
 	addr = m_alloc(l)
-	m_write(addr,0x01)
+	m_write(addr,string)
 	na = add(addr,1)
 	m_write(na,a)
 	ln = sub(la,1)
 	na = add(ma,ln)
 	m_write(na,b)
-	ns = m_read(addr,0x07)
+	ns = m_read(addr,string)
 	m_free(addr,l)
 	ns
 end

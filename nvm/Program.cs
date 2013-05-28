@@ -35,6 +35,7 @@ namespace nvm
 */
 using System;
 using System.IO;
+using nvm.v2.Assembly;
 namespace nvm.v2
 {
     class Startup

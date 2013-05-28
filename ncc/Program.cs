@@ -1,5 +1,6 @@
 ﻿using ncc.AST;
 using nvm.v2;
+using nvm.v2.Assembly;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,10 +44,15 @@ namespace ncc
             Console.Write(sba.ToString());
             Console.ReadKey();
 
+            CompilerMeta cm = new CompilerMeta();
+            cm.ProgramName = "Test";
+            cm.localMeta = VarnameLocalizer.GetLocalMeta();
+
             Console.WriteLine("--------------- OUTPUT --------------");
             
             VM.InitOpcodes();
             Assembler a = new Assembler();
+            a.CompilerMeta = cm;
             a.code = sba.ToString();
             byte[] code = a.Assemble();
 

@@ -4,11 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace nvm.v2
+namespace nvm.v2.Assembly
 {
     public class Assembler
     {
         public string code { get; set; }
+        public CompilerMeta CompilerMeta { get; set; }
+
+        public ProgramMeta programMeta { get; private set; }
 
         internal Dictionary<string, uint> labels;
         internal List<Tuple<int, string>> labelcalls;
@@ -21,6 +24,14 @@ namespace nvm.v2
             labelcalls = new List<Tuple<int,string>>();
 
             code = code.Replace("\r", "");
+
+            if (CompilerMeta != null)
+            {
+                programMeta = new ProgramMeta();
+                programMeta.AsmName = CompilerMeta.ProgramName;
+                programMeta.localData = CompilerMeta.localMeta;
+                programMeta.functionData = new Dictionary<uint, string>();
+            }
 
             foreach (string line in code.Split('\n'))
             {
@@ -107,6 +118,7 @@ namespace nvm.v2
                 }
             }
 
+            bool dometa = (programMeta != null);
             foreach (KeyValuePair<string, uint> label in labels)
             {
                 byte[] addr = BitConverter.GetBytes(label.Value);
@@ -116,6 +128,10 @@ namespace nvm.v2
                     result[call.Item1 + 1] = addr[1];
                     result[call.Item1 + 2] = addr[2];
                     result[call.Item1 + 3] = addr[3];
+                }
+                if (dometa)
+                {
+                    programMeta.functionData.Add(label.Value, label.Key);
                 }
             }
 

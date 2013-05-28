@@ -15,6 +15,7 @@ namespace nvm.v2
         internal bool RN;
         internal uint heapstart;
         internal List<MemChunk> freeList;
+        internal ProgramMeta metadata;
 
         internal static OpCode[] opcodes;
         internal static Interupt[] interups;
@@ -573,6 +574,18 @@ namespace nvm.v2
                             }
                         }
                         m.stack.Push(o);
+                    }
+                },
+                new OpCode() {
+                    Name = "DEBUG", BYTECODE = 0x24,
+                    Run = (m) => {
+
+                    }
+                },
+                new OpCode() {
+                    Name = "METAINF", BYTECODE = 0x25,
+                    Run = (m) => {
+
                     }
                 }
             };

@@ -50,6 +50,16 @@ namespace ncc
         static class VarnameLocalizer
         {
             public static Dictionary<string, int> locals = new Dictionary<string,int>();
+
+            internal static Dictionary<int, string> GetLocalMeta()
+            {
+                Dictionary<int, string> meta = new Dictionary<int, string>();
+                foreach (KeyValuePair<string,int> item in locals)
+                {
+                    meta.Add(item.Value, item.Key);
+                }
+                return meta;
+            }
         }
 
         class setvar : STMT
