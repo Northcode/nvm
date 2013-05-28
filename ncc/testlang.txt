@@ -5,13 +5,20 @@ string = 0x07
 test()
 	a = "Hello "
 	b = "World!"
-	strcat(@a,b)
+
+	c = 13
+	debug()
+
 	term()
 end
 
 prt(a)
 	a
 	prts()
+end
+
+debug()
+	asm "DEBUG"
 end
 
 prts()

@@ -57,6 +57,7 @@ namespace ncc
             byte[] code = a.Assemble();
 
             VM v = new VM(code);
+            v.metadata = a.programMeta;
             v.Run();
             Console.ReadKey();
         }

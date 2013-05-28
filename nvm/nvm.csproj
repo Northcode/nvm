@@ -86,12 +86,11 @@
     <Compile Include="v2\Assembly\Assembler.cs" />
     <Compile Include="v2\Assembly\CompilerMeta.cs" />
     <Compile Include="v2\Buffer.cs" />
-    <Compile Include="v2\Debugger\Debugger.cs" />
-    <Compile Include="v2\Debugger\DebuggerOptions.cs" />
-    <Compile Include="v2\Debugger\DebugWindow.cs">
+    <Compile Include="v2\Debuging\Debugger.cs" />
+    <Compile Include="v2\Debuging\DebugWindow.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="v2\Debugger\DebugWindow.Designer.cs">
+    <Compile Include="v2\Debuging\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
     <Compile Include="v2\Interupt.cs" />
@@ -120,7 +119,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="v2\Debugger\DebugWindow.resx">
+    <EmbeddedResource Include="v2\Debuging\DebugWindow.resx">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>

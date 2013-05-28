@@ -26,5 +26,5 @@ C:\Users\Andreas Larsen\Programming\nvm\nvm\bin\Debug\test.txt
 C:\Users\Andreas Larsen\Programming\nvm\nvm\bin\Debug\nvm.exe
 C:\Users\Andreas Larsen\Programming\nvm\nvm\bin\Debug\nvm.pdb
 C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.csprojResolveAssemblyReference.cache
-C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.v2.Debugger.DebugWindow.resources
 C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.csproj.GenerateResource.Cache
+C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.v2.Debuging.DebugWindow.resources

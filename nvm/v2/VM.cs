@@ -1,4 +1,5 @@
-﻿using System;
+﻿using nvm.v2.Debuging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,7 +16,9 @@ namespace nvm.v2
         internal bool RN;
         internal uint heapstart;
         internal List<MemChunk> freeList;
-        internal ProgramMeta metadata;
+        public ProgramMeta metadata;
+        internal bool DEBUG;
+        internal Debugger debugger;
 
         internal static OpCode[] opcodes;
         internal static Interupt[] interups;
@@ -30,6 +33,7 @@ namespace nvm.v2
             locals = new uint[50];
             freeList = new List<MemChunk>();
             freeList.Add(new MemChunk() { chunkstart = heapstart, size = (int)(Memory.Size - heapstart - 1) });
+            DEBUG = false;
         }
 
         public void Run()
@@ -38,6 +42,10 @@ namespace nvm.v2
             while (RN)
             {
                 byte op = Memory.Read(IP); IP++;
+                if (DEBUG)
+                {
+                    debugger.Update();
+                }
                 opcodes[op].Run(this);
             }
         }
@@ -579,13 +587,10 @@ namespace nvm.v2
                 new OpCode() {
                     Name = "DEBUG", BYTECODE = 0x24,
                     Run = (m) => {
-
-                    }
-                },
-                new OpCode() {
-                    Name = "METAINF", BYTECODE = 0x25,
-                    Run = (m) => {
-
+                        m.debugger = new Debugger();
+                        m.debugger.process = m;
+                        m.debugger.start();
+                        m.DEBUG = true;
                     }
                 }
             };
