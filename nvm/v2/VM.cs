@@ -18,6 +18,7 @@ namespace nvm.v2
         internal List<MemChunk> freeList;
         public ProgramMeta metadata;
         internal bool DEBUG;
+        internal bool STEP;
         internal Debugger debugger;
 
         internal static OpCode[] opcodes;
@@ -39,15 +40,18 @@ namespace nvm.v2
         public void Run()
         {
             RN = true;
+            STEP = false;
             while (RN)
             {
                 byte op = Memory.Read(IP); IP++;
-                if (DEBUG)
+                if (STEP)
                 {
                     debugger.Update();
+                    Console.ReadKey();
                 }
                 opcodes[op].Run(this);
             }
+            Console.WriteLine("Program Terminated!");
         }
 
         public static void InitOpcodes()
@@ -61,6 +65,17 @@ namespace nvm.v2
                     Name = "JMP", BYTECODE = 0x01,
                     Run = (m) => {
                         uint addr = m.Memory.ReadUInt(m.IP); m.IP += 4;
+                        if(m.DEBUG)
+                        {
+                            if (m.metadata.functionData.ContainsKey(addr))
+                            {
+                                m.debugger.DisAssembler.AppendLine("JMP " + addr + " (" + m.metadata.functionData[addr] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("JMP " + addr);
+                            }
+                        }
                         if(addr != 0) 
                         {
                             m.IP = addr;
@@ -75,6 +90,17 @@ namespace nvm.v2
                     Name = "CALL", BYTECODE = 0x02,
                     Run = (m) => { 
                         uint addr = m.Memory.ReadUInt(m.IP); m.IP += 4;
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.functionData.ContainsKey(addr))
+                            {
+                                m.debugger.DisAssembler.AppendLine("CALL " + addr + " (" + m.metadata.functionData[addr] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("CALL " + addr);
+                            }
+                        }
                         if(addr != 0)
                         {
                             m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
@@ -115,29 +141,53 @@ namespace nvm.v2
                             default:
                                 break;
 	                    }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("PUSH h" + type.ToString("X") + " " + (val is string ? '"' + val.ToString() + '"' : val.ToString()));
+                        }
                         m.stack.Push(val);
                     }
                 }, //-------------------
                 new OpCode() {
                     Name = "POP", BYTECODE = 0x04,
-                    Run = (m) => { m.stack.Pop(); }
+                    Run = (m) => { 
+                        m.stack.Pop();
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("POP");
+                        }
+                    }
                 }, //-------------------
                 new OpCode() {
                     Name = "LOCALCNT", BYTECODE = 0x05,
                     Run = (m) => {
                         int c = m.Memory.ReadInt(m.IP); m.IP += 4;
                         m.locals = new uint[c];
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("LOCALCNT " + c);
+                        }
                     }
                 },//-------------------
                 new OpCode() {
                     Name = "END", BYTECODE = 0x06,
-                    Run = (m) => { m.RN = false; }
+                    Run = (m) => { 
+                        m.RN = false;
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("END");
+                        }
+                    }
                 }, //-------------------
                 new OpCode() {
                     Name = "DMPSTACK", BYTECODE = 0x07,
                     Run = (m) => {
                         while(m.stack.Count > 0) {
                             Console.WriteLine(m.stack.Pop());
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("DMPSTACK");
                         }
                     }
                 },
@@ -148,6 +198,17 @@ namespace nvm.v2
                         object o = m.stack.Pop();
                         uint aaddr = m.Alloc(o);
                         m.locals[v] = aaddr;
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.localData.ContainsKey(v))
+                            {
+                                m.debugger.DisAssembler.AppendLine("STLOC " + v + "(" + m.metadata.localData[v] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("STLOC " + v);
+                            }
+                        }
                     }
                 },
                 new OpCode() {
@@ -165,7 +226,19 @@ namespace nvm.v2
                             m.Free(addr, 5);
                         }
                         m.locals[v] = 0;
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.localData.ContainsKey(v))
+                            {
+                                m.debugger.DisAssembler.AppendLine("FREELOC " + v + "(" + m.metadata.localData[v] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("FREELOC " + v);
+                            }
+                        }
                     }
+
                 },
                 new OpCode() {
                     Name = "LDLOC", BYTECODE = 0x0a,
@@ -193,6 +266,17 @@ namespace nvm.v2
                             string s = m.Memory.ReadString(addr + 1);
                             m.stack.Push(s);
                         }
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.localData.ContainsKey(l))
+                            {
+                                m.debugger.DisAssembler.AppendLine("LDLOC " + l + "(" + m.metadata.localData[l] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("LDLOC " + l);
+                            }
+                        }
                     }
                 },
                 new OpCode() {
@@ -201,6 +285,17 @@ namespace nvm.v2
                         int l = m.Memory.ReadInt(m.IP); m.IP += 4;
                         uint addr = m.locals[l];
                         m.stack.Push(addr);
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.localData.ContainsKey(l))
+                            {
+                                m.debugger.DisAssembler.AppendLine("LDPTR " + l + "(" + m.metadata.localData[l] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("LDPTR " + l);
+                            }
+                        }
                     }
                 },
                 new OpCode() {
@@ -209,6 +304,17 @@ namespace nvm.v2
                         int l = m.Memory.ReadInt(m.IP); m.IP += 4;
                         uint addr = (uint)m.stack.Pop();
                         m.locals[l] = addr;
+                        if (m.DEBUG)
+                        {
+                            if (m.metadata.localData.ContainsKey(l))
+                            {
+                                m.debugger.DisAssembler.AppendLine("STPTR " + l + "(" + m.metadata.localData[l] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("STPTR " + l);
+                            }
+                        }
                     }
                 },
                 new OpCode() {
@@ -218,6 +324,10 @@ namespace nvm.v2
                         uint addr = m.MAlloc(size * 4 + 4);
                         m.Memory.Write(addr, size);
                         m.stack.Push(addr);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("ARRAY");
+                        }
                     }
                 },
                 new OpCode() {
@@ -226,6 +336,10 @@ namespace nvm.v2
                         uint addr = (uint)m.stack.Pop();
                         int size = m.Memory.ReadInt(addr);
                         m.Free(addr, size * 4 + 4);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("FREEARRAY");
+                        }
                     }
                 },
                 new OpCode() {
@@ -236,6 +350,10 @@ namespace nvm.v2
                         uint array = (uint)m.stack.Pop();
                         uint addr = m.Alloc(o);
                         m.Memory.Write((uint)(array + 4 + index * 4),addr);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("ST_ELEM");
+                        }
                     }
                 },
                 new OpCode() {
@@ -245,6 +363,10 @@ namespace nvm.v2
                         int index = (int)m.stack.Pop();
                         uint array = (uint)m.stack.Pop();
                         m.Memory.Write((uint)(array + 4 + index * 4),paddr);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("ST_ELEM_PTR");
+                        }
                     }
                 },
                 new OpCode() {
@@ -254,6 +376,10 @@ namespace nvm.v2
                         uint array = (uint)m.stack.Pop();
                         uint raddr = m.Memory.ReadUInt((uint)(array + 4 + index * 4));
                         m.stack.Push(raddr);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("LD_ELEM");
+                        }
                     }
                 },
                 new OpCode() {
@@ -276,6 +402,10 @@ namespace nvm.v2
                             string v = (string)m.Memory.ReadString(addr + 1);
                             m.stack.Push(v);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("LDADDR");
+                        }
                     }
                 },
                 new OpCode() {
@@ -284,6 +414,10 @@ namespace nvm.v2
                         int size = (int)m.stack.Pop();
                         uint addr = m.MAlloc(size);
                         m.stack.Push(addr);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("MALLOC");
+                        }
                     }
                 },
                 new OpCode() {
@@ -292,6 +426,10 @@ namespace nvm.v2
                         int size = (int)m.stack.Pop();
                         uint addr = (uint)m.stack.Pop();
                         m.Free(addr, size);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("FREE");
+                        }
                     }
                 },
                 new OpCode() {
@@ -299,6 +437,10 @@ namespace nvm.v2
                     Run = (m) => {
                         object o = m.stack.Pop();
                         Console.Write(o);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("SYSF_PRINT");
+                        }
                     }
                 },
                 new OpCode() {
@@ -306,6 +448,10 @@ namespace nvm.v2
                     Run = (m) => {
                         string s = Console.ReadLine();
                         m.stack.Push(s);
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("SYSF_READLN");
+                        }
                     }
                 },
                 new OpCode() {
@@ -322,6 +468,10 @@ namespace nvm.v2
                         {
                             int c = (int)a + (int)b;
                             m.stack.Push(c);
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("ADD");
                         }
                     }
                 },
@@ -340,6 +490,10 @@ namespace nvm.v2
                             int c = (int)a - (int)b;
                             m.stack.Push(c);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("SUB");
+                        }
                     }
                 },
                 new OpCode() {
@@ -356,6 +510,10 @@ namespace nvm.v2
                         {
                             int c = (int)a * (int)b;
                             m.stack.Push(c);
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("MUL");
                         }
                     }
                 },
@@ -374,6 +532,10 @@ namespace nvm.v2
                             int c = (int)a / (int)b;
                             m.stack.Push(c);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("DIV");
+                        }
                     }
                 },
                 new OpCode() {
@@ -391,6 +553,10 @@ namespace nvm.v2
                             int c = (int)a % (int)b;
                             m.stack.Push(c);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("MOD");
+                        }
                     }
                 },
                 new OpCode() {
@@ -405,6 +571,10 @@ namespace nvm.v2
                             bool bc = ba || bb;
                             byte c = (byte)(bc ? 1 : 0);
                             m.stack.Push(c);
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("OR");
                         }
                     }
                 },
@@ -421,6 +591,10 @@ namespace nvm.v2
                             byte c = (byte)(bc ? 1 : 0);
                             m.stack.Push(c);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("AND");
+                        }
                     }
                 },
                 new OpCode() {
@@ -436,6 +610,10 @@ namespace nvm.v2
                             byte c = (byte)(bc ? 1 : 0);
                             m.stack.Push(c);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("XOR");
+                        }
                     }
                 },
                 new OpCode() {
@@ -443,6 +621,10 @@ namespace nvm.v2
                     Run = (m) => {
                         Tuple<uint, int> c = m.callstack.Pop();
                         m.IP = c.Item1;
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("RET");
+                        }
                     }
                 },
                 new OpCode() {
@@ -465,6 +647,10 @@ namespace nvm.v2
                         else if (o is string)
                         {
                             m.Memory.Write(u, (string)o);
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("MEMW");
                         }
                     }
                 },
@@ -493,6 +679,10 @@ namespace nvm.v2
                             string i = m.Memory.ReadString(u);
                             m.stack.Push(i);
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("MEMR");
+                        }
                     }
                 },
                 new OpCode() {
@@ -510,6 +700,10 @@ namespace nvm.v2
                         else if (o is string)
                         {
                             m.stack.Push((o as string).Length + 1);
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("SIZEOF");
                         }
                     }
                 },
@@ -581,16 +775,30 @@ namespace nvm.v2
                                 return;
                             }
                         }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("CAST");
+                        }
                         m.stack.Push(o);
                     }
                 },
                 new OpCode() {
                     Name = "DEBUG", BYTECODE = 0x24,
                     Run = (m) => {
-                        m.debugger = new Debugger();
-                        m.debugger.process = m;
-                        m.debugger.start();
-                        m.DEBUG = true;
+                        if(!m.DEBUG) {
+                            m.debugger = new Debugger();
+                            m.debugger.process = m;
+                            m.debugger.start();
+                            m.DEBUG = true;
+                        } else {
+                            m.debugger.Update();
+                            Console.WriteLine("DEBUG: BREAK");
+                            Console.ReadLine();
+                        }
+                        if (m.DEBUG)
+                        {
+                            m.debugger.DisAssembler.AppendLine("DEBUG");
+                        }
                     }
                 }
             };

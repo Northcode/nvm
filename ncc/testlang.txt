@@ -1,14 +1,13 @@
-﻿int = 0x03
+﻿asm "DEBUG"
+int = 0x03
 uint = 0x04
 string = 0x07
 
 test()
 	a = "Hello "
 	b = "World!"
-
-	c = 13
 	debug()
-
+	strcat(@a,b)
 	term()
 end
 
@@ -25,57 +24,78 @@ prts()
 	asm "SYSF_PRINT"
 end
 
+input()
+	asm "SYSF_READLN"
+end
+
 m_alloc(size)
     size
     asm "MALLOC"
+	free size
 end
 
 m_free(addr,size)
     cast(addr,uint)
     size
     asm "FREE"
+	free addr
+	free size
 end
 
 m_write(addr,o)
     o
     cast(addr,0x04)
     asm "MEMW"
+	free addr
+	free o
 end
 
 m_read(addr,type)
     cast(addr,0x04)
     type
     asm "MEMR"
+	free addr
+	free type
 end
 
 cast(a,t)
 	a
 	t
 	asm "CAST"
+	free a
+	free t
 end
 
 strcat(@a,b)
+	debug()
 	la = sizeof(a)
 	lb = sizeof(b)
-	prt(la)
-	prt(lb)
+	debug()
 	l = add(la,lb)
 	l = sub(l,1)
-	prt(l)
+	debug()
 	addr = m_alloc(l)
+	debug()
 	m_write(addr,string)
+	debug()
 	na = add(addr,1)
+	debug()
 	m_write(na,a)
+	debug()
 	ln = sub(la,1)
 	na = add(ma,ln)
+	debug()
 	m_write(na,b)
+	debug()
 	ns = m_read(addr,string)
+	debug()
 	m_free(addr,l)
+	debug()
 	ns
 end
 
 sizeof(o)
-	o asm "SIZEOF"
+	o asm "SIZEOF" free o
 end
 
 addp(@a,@b)
@@ -83,9 +103,21 @@ addp(@a,@b)
 end
 
 add(a,b)
+	debug()
 	cast(a,0x03)
 	cast(b,0x03)
 	asm "ADD"
+	free a
+	free b
+end
+
+sub(a,b)
+	debug()
+	cast(a,0x03)
+	cast(b,0x03)
+	asm "SUB"
+	free a
+	free b
 end
 
 term()

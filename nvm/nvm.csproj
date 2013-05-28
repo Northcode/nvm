@@ -93,6 +93,7 @@
     <Compile Include="v2\Debuging\DebugWindow.Designer.cs">
       <DependentUpon>DebugWindow.cs</DependentUpon>
     </Compile>
+    <Compile Include="v2\Fixes\fix.cs" />
     <Compile Include="v2\Interupt.cs" />
     <Compile Include="v2\MemChunk.cs" />
     <Compile Include="v2\OpCode.cs" />
