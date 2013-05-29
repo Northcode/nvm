@@ -86,5 +86,10 @@ namespace nvm.v2.Debuging
         {
 
         }
+
+        private void DebugWindow_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            debugger.process.DEBUG = false;
+        }
     }
 }

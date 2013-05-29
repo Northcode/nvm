@@ -44,11 +44,6 @@ namespace nvm.v2
             while (RN)
             {
                 byte op = Memory.Read(IP); IP++;
-                if (STEP)
-                {
-                    debugger.Update();
-                    Console.ReadKey();
-                }
                 opcodes[op].Run(this);
             }
             Console.WriteLine("Program Terminated!");
