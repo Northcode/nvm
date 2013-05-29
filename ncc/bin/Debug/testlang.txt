@@ -95,7 +95,7 @@ strcat(@a,b)
 end
 
 sizeof(o)
-	o asm "SIZEOF" free o
+	o asm "SIZEOF" .free o
 end
 
 addp(@a,@b)
@@ -103,7 +103,6 @@ addp(@a,@b)
 end
 
 add(a,b)
-	debug()
 	cast(a,0x03)
 	cast(b,0x03)
 	asm "ADD"
@@ -112,7 +111,6 @@ add(a,b)
 end
 
 sub(a,b)
-	debug()
 	cast(a,0x03)
 	cast(b,0x03)
 	asm "SUB"

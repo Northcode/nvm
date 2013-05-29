@@ -223,6 +223,7 @@
             this.Controls.Add(this.label1);
             this.Name = "DebugWindow";
             this.Text = "DebugWindow";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DebugWindow_FormClosing);
             this.Load += new System.EventHandler(this.DebugWindow_Load);
             ((System.ComponentModel.ISupportInitialize)(this.NumIp)).EndInit();
             this.ResumeLayout(false);
