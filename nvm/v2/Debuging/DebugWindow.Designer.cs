@@ -58,10 +58,14 @@
             // 
             // varList
             // 
+            this.varList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left)));
+            this.varList.Font = new System.Drawing.Font("Consolas", 12F);
             this.varList.FormattingEnabled = true;
+            this.varList.ItemHeight = 19;
             this.varList.Location = new System.Drawing.Point(12, 86);
             this.varList.Name = "varList";
-            this.varList.Size = new System.Drawing.Size(187, 381);
+            this.varList.Size = new System.Drawing.Size(240, 384);
             this.varList.TabIndex = 1;
             // 
             // label2
@@ -100,7 +104,7 @@
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Consolas", 12F);
-            this.label4.Location = new System.Drawing.Point(240, 50);
+            this.label4.Location = new System.Drawing.Point(321, 56);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(117, 19);
             this.label4.TabIndex = 5;
@@ -111,7 +115,7 @@
             // 
             this.stkCnt.AutoSize = true;
             this.stkCnt.Font = new System.Drawing.Font("Consolas", 12F);
-            this.stkCnt.Location = new System.Drawing.Point(363, 50);
+            this.stkCnt.Location = new System.Drawing.Point(444, 56);
             this.stkCnt.Name = "stkCnt";
             this.stkCnt.Size = new System.Drawing.Size(36, 19);
             this.stkCnt.TabIndex = 6;
@@ -121,7 +125,7 @@
             // 
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Consolas", 12F);
-            this.label5.Location = new System.Drawing.Point(213, 111);
+            this.label5.Location = new System.Drawing.Point(294, 117);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(144, 19);
             this.label5.TabIndex = 7;
@@ -131,7 +135,7 @@
             // 
             this.txtopCode.AutoSize = true;
             this.txtopCode.Font = new System.Drawing.Font("Consolas", 12F);
-            this.txtopCode.Location = new System.Drawing.Point(363, 111);
+            this.txtopCode.Location = new System.Drawing.Point(444, 117);
             this.txtopCode.Name = "txtopCode";
             this.txtopCode.Size = new System.Drawing.Size(27, 19);
             this.txtopCode.TabIndex = 8;
@@ -151,7 +155,7 @@
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(213, 140);
+            this.label6.Location = new System.Drawing.Point(258, 153);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(117, 19);
             this.label6.TabIndex = 10;
@@ -163,11 +167,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textBox1.Font = new System.Drawing.Font("Consolas", 12F);
-            this.textBox1.Location = new System.Drawing.Point(217, 175);
+            this.textBox1.Location = new System.Drawing.Point(262, 175);
             this.textBox1.Multiline = true;
             this.textBox1.Name = "textBox1";
             this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-            this.textBox1.Size = new System.Drawing.Size(348, 292);
+            this.textBox1.Size = new System.Drawing.Size(392, 292);
             this.textBox1.TabIndex = 11;
             // 
             // checkBox1
@@ -184,7 +188,7 @@
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Consolas", 12F);
-            this.label7.Location = new System.Drawing.Point(258, 78);
+            this.label7.Location = new System.Drawing.Point(339, 84);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(99, 19);
             this.label7.TabIndex = 13;
@@ -194,7 +198,7 @@
             // 
             this.stackTop.AutoSize = true;
             this.stackTop.Font = new System.Drawing.Font("Consolas", 12F);
-            this.stackTop.Location = new System.Drawing.Point(363, 78);
+            this.stackTop.Location = new System.Drawing.Point(444, 84);
             this.stackTop.Name = "stackTop";
             this.stackTop.Size = new System.Drawing.Size(36, 19);
             this.stackTop.TabIndex = 14;
@@ -205,7 +209,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(577, 484);
+            this.ClientSize = new System.Drawing.Size(666, 484);
             this.Controls.Add(this.stackTop);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.checkBox1);

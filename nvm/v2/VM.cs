@@ -44,7 +44,20 @@ namespace nvm.v2
             while (RN)
             {
                 byte op = Memory.Read(IP); IP++;
-                opcodes[op].Run(this);
+                try
+                {
+                    opcodes[op].Run(this);
+                }
+                catch (Exception ex)
+                {
+                    if (DEBUG)
+                    {
+                        debugger.Update();
+                        Console.WriteLine("ERROR:");
+                        Console.WriteLine(ex.ToString());
+                        Console.ReadKey();
+                    }
+                }
             }
             Console.WriteLine("Program Terminated!");
         }

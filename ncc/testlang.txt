@@ -6,7 +6,6 @@ string = 0x07
 test()
 	a = "Hello "
 	b = "World!"
-	debug()
 	strcat(@a,b)
 	term()
 end
@@ -31,52 +30,51 @@ end
 m_alloc(size)
     size
     asm "MALLOC"
-	free size
+	.free size
 end
 
 m_free(addr,size)
     cast(addr,uint)
     size
     asm "FREE"
-	free addr
-	free size
+	.free addr
+	.free size
 end
 
 m_write(addr,o)
+	debug()
     o
     cast(addr,0x04)
     asm "MEMW"
-	free addr
-	free o
+	.free addr
+	.free o
 end
 
 m_read(addr,type)
+	debug()
     cast(addr,0x04)
     type
     asm "MEMR"
-	free addr
-	free type
+	.free addr
+	.free type
 end
 
 cast(a,t)
 	a
 	t
 	asm "CAST"
-	free a
-	free t
+	.free a
+	.free t
 end
 
 strcat(@a,b)
-	debug()
 	la = sizeof(a)
 	lb = sizeof(b)
-	debug()
 	l = add(la,lb)
 	l = sub(l,1)
-	debug()
 	addr = m_alloc(l)
 	debug()
-	m_write(addr,string)
+	m_write(addr,0x07)
 	debug()
 	na = add(addr,1)
 	debug()
@@ -87,7 +85,7 @@ strcat(@a,b)
 	debug()
 	m_write(na,b)
 	debug()
-	ns = m_read(addr,string)
+	ns = m_read(addr,0x07)
 	debug()
 	m_free(addr,l)
 	debug()
@@ -105,17 +103,18 @@ end
 add(a,b)
 	cast(a,0x03)
 	cast(b,0x03)
+	debug()
 	asm "ADD"
-	free a
-	free b
+	.free a
+	.free b
 end
 
 sub(a,b)
 	cast(a,0x03)
 	cast(b,0x03)
 	asm "SUB"
-	free a
-	free b
+	.free a
+	.free b
 end
 
 term()
