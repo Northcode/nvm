@@ -55,6 +55,7 @@ namespace nvm.v2
                         debugger.Update();
                         Console.WriteLine("ERROR:");
                         Console.WriteLine(ex.ToString());
+                        Console.WriteLine("Current opcode: " + op + " : " + opcodes[op].Name);
                         Console.ReadKey();
                     }
                 }
@@ -779,6 +780,27 @@ namespace nvm.v2
                             else if (t == ValueTypeCodes.INT)
                             {
                                 int u = Convert.ToInt32((string)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                        }
+                        else if(o is uint)
+                        {
+                            if (t == ValueTypeCodes.BYTE)
+                            {
+                                byte i = (byte)((uint)o);
+                                m.stack.Push(i);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.INT)
+                            {
+                                int u = (int)((uint)o);
+                                m.stack.Push(u);
+                                return;
+                            }
+                            else if (t == ValueTypeCodes.STRING)
+                            {
+                                string u = ((uint)o).ToString();
                                 m.stack.Push(u);
                                 return;
                             }

@@ -126,6 +126,14 @@ namespace ncc
                 {
                     sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
                 }
+                else if (VarnameLocalizer.locals.ContainsKey(varname))
+                {
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                }
+                else
+                {
+                    throw new Exception("Failed to load var, Unknown variable: " + varname);
+                }
                 return sb.ToString();
             }
         }
@@ -140,6 +148,14 @@ namespace ncc
                 if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
                 {
                     sb.AppendLine("LDPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                }
+                else if (VarnameLocalizer.locals.ContainsKey(varname))
+                {
+                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[varname]);
+                }
+                else
+                {
+                    throw new Exception("Failed to load pointer, Unknown variable: " + varname);
                 }
                 return sb.ToString();
             }

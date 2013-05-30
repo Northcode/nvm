@@ -6,7 +6,8 @@ string = 0x07
 test()
 	a = "Hello "
 	b = "World!"
-	strcat(@a,b)
+	c = strcat(@a,b)
+	prt(c)
 	term()
 end
 
@@ -42,7 +43,6 @@ m_free(addr,size)
 end
 
 m_write(addr,o)
-	debug()
     o
     cast(addr,0x04)
     asm "MEMW"
@@ -51,7 +51,6 @@ m_write(addr,o)
 end
 
 m_read(addr,type)
-	debug()
     cast(addr,0x04)
     type
     asm "MEMR"
@@ -73,23 +72,14 @@ strcat(@a,b)
 	l = add(la,lb)
 	l = sub(l,1)
 	addr = m_alloc(l)
-	debug()
 	m_write(addr,0x07)
-	debug()
 	na = add(addr,1)
-	debug()
 	m_write(na,a)
-	debug()
 	ln = sub(la,1)
-	na = add(ma,ln)
+	na = add(na,ln)
 	debug()
 	m_write(na,b)
-	debug()
-	ns = m_read(addr,0x07)
-	debug()
-	m_free(addr,l)
-	debug()
-	ns
+
 end
 
 sizeof(o)
@@ -103,7 +93,6 @@ end
 add(a,b)
 	cast(a,0x03)
 	cast(b,0x03)
-	debug()
 	asm "ADD"
 	.free a
 	.free b
@@ -118,5 +107,6 @@ sub(a,b)
 end
 
 term()
+	asm "DEBUG"
 	asm "END"
 end

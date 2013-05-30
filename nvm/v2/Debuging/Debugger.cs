@@ -23,6 +23,8 @@ namespace nvm.v2.Debuging
 
         void thread()
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(true);
             Application.Run(wnd);
         }
 
