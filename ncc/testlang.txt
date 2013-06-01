@@ -1,32 +1,23 @@
-﻿asm "DEBUG"
-int = 0x03
+﻿int = 0x03
 uint = 0x04
 string = 0x07
 
 test()
 	a = "Hello "
 	b = "World!"
-	c = strcat(@a,b)
-	prt(c)
+	prt(b)
+	prt(a)
+	prt("\n")
 	term()
 end
 
-prt(a)
-	a
-	prts()
-end
+prts() asm "SYSF_PRINT" end
 
-debug()
-	asm "DEBUG"
-end
+prt(a) a prts() end
 
-prts()
-	asm "SYSF_PRINT"
-end
+debug() asm "DEBUG" end
 
-input()
-	asm "SYSF_READLN"
-end
+input() asm "SYSF_READLN" end
 
 m_alloc(size)
     size
@@ -107,6 +98,5 @@ sub(a,b)
 end
 
 term()
-	asm "DEBUG"
 	asm "END"
 end

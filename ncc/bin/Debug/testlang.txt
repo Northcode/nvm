@@ -1,15 +1,17 @@
-﻿asm "DEBUG"
-int = 0x03
+﻿int = 0x03
 uint = 0x04
 string = 0x07
 
 test()
 	a = "Hello "
 	b = "World!"
-	c = strcat(@a,b)
-	prt(c)
+	prt(a)
+	prt(b)
+	prt("\n")
 	term()
 end
+
+prts() asm "SYSF_PRINT" end
 
 prt(a)
 	a
@@ -18,10 +20,6 @@ end
 
 debug()
 	asm "DEBUG"
-end
-
-prts()
-	asm "SYSF_PRINT"
 end
 
 input()
@@ -107,6 +105,5 @@ sub(a,b)
 end
 
 term()
-	asm "DEBUG"
 	asm "END"
 end

@@ -30,3 +30,13 @@ C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.csproj.GenerateResourc
 C:\Users\Andreas Larsen\Programming\nvm\nvm\obj\Debug\nvm.v2.Debuging.DebugWindow.resources
 E:\Desktop\nvm\nvm\obj\Debug\nvm.v2.Debuging.DebugWindow.resources
 E:\Desktop\nvm\nvm\obj\Debug\nvm.csproj.GenerateResource.Cache
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\bin\Debug\nvm.exe.config
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\obj\Debug\nvm.exe
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\obj\Debug\nvm.pdb
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\bin\Debug\testcode.txt
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\bin\Debug\test.txt
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\bin\Debug\nvm.exe
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\bin\Debug\nvm.pdb
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\obj\Debug\nvm.csprojResolveAssemblyReference.cache
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\obj\Debug\nvm.v2.Debuging.DebugWindow.resources
+C:\Users\Andreas\Documents\GitHub\nvm\nvm\obj\Debug\nvm.csproj.GenerateResource.Cache
