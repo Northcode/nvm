@@ -5,8 +5,8 @@ string = 0x07
 test()
 	a = "Hello "
 	b = "World!"
-	prt(b)
 	prt(a)
+	prt(b)
 	prt("\n")
 	term()
 end

@@ -5,26 +5,19 @@ string = 0x07
 test()
 	a = "Hello "
 	b = "World!"
-	prt(a)
 	prt(b)
+	prt(a)
 	prt("\n")
 	term()
 end
 
 prts() asm "SYSF_PRINT" end
 
-prt(a)
-	a
-	prts()
-end
+prt(a) a prts() end
 
-debug()
-	asm "DEBUG"
-end
+debug() asm "DEBUG" end
 
-input()
-	asm "SYSF_READLN"
-end
+input() asm "SYSF_READLN" end
 
 m_alloc(size)
     size
