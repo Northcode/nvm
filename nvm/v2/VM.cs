@@ -468,6 +468,16 @@ namespace nvm.v2
                     Run = (m) => {
                         object b = m.stack.Pop();
                         object a = m.stack.Pop();
+
+                        if(a is uint)
+                        {
+                            a = (int)(uint)a;
+                        }
+                        if (b is uint)
+                        {
+                            b = (int)(uint)b;
+                        }
+
                         if(a is byte && b is byte)
                         {
                             byte c = (byte)((byte)a + (byte)b);

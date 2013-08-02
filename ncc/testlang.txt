@@ -1,2 +1,43 @@
-﻿5 + 3 * 1 - 3 * (3 + 4)
-asm "END"
+﻿main()
+	debug()
+	a = array(4)
+	array_str(@a,0,"test")
+	t = array_ld(@a,0)
+	@t = t
+	prt(t)
+	debug()
+	trm()
+end
+
+debug() asm "DEBUG" end
+
+prt(o)
+	o
+	prts()
+	.free o
+end
+
+array(l)
+	l
+	asm "ARRAY"
+	.free l
+end
+
+array_str(@array,index,object)
+	@array
+	index
+	object
+	asm "ST_ELEM"
+end
+
+array_ld(@array,index)
+	@array
+	index
+	asm "LD_ELEM"
+end
+
+prts()
+	asm "SYSF_PRINT"
+end
+
+trm() asm "END" end

@@ -193,16 +193,24 @@ namespace ncc
 
                 while (true)
                 {
-                    if (tokens[i].IsArithOp())
+                    if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')')
                     {
-                        if ((char)tokens[i].val == ')')
-                        {
-                        }
-                        else if (tokens[i].ArithOpPriority() < stk.Peek().ArithOpPriority())
+                        while (stk.Count > 0 && (char)stk.Peek().val != '(')
                         {
                             finalexpr.Add(stk.Pop().ToArith());
                         }
+                        stk.Pop();
+                        i++;
+                    }
+                    else if (tokens[i].IsArithOp())
+                    {
+                        if (stk.Count > 0 && tokens[i].ArithOpPriority() < stk.Peek().ArithOpPriority())
+                        {
+                            if((char)stk.Peek().val != '(')
+                                finalexpr.Add(stk.Pop().ToArith());
+                        }
                         stk.Push(tokens[i]);
+                        lastwasop = true;
                         i++;
                     }
                     else
