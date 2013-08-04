@@ -452,5 +452,63 @@ namespace ncc
                 return sb.ToString();
             }
         }
+
+        public class LambdaExpr : EXPR
+        {
+            public string lambdaRef;
+
+            public string[] args;
+            public STMT[] body;
+
+            public string ToAsm(string scope)
+            {
+                StringBuilder sb = new StringBuilder();
+                lambdaRef = "lmabda" + LambdaHolder.lambdas.Count;
+                LambdaHolder.lambdas.Add(this);
+                sb.AppendLine("PUSH uint :" + lambdaRef);
+                return sb.ToString();
+            }
+        }
+
+        public class LambdaHolder
+        {
+            public static List<LambdaExpr> lambdas = new List<LambdaExpr>();
+
+            public static string WriteLambdas()
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (LambdaExpr lambda in lambdas)
+                {
+                    sb.AppendLine(lambda.lambdaRef + ":");
+                    foreach (string arg in lambda.args)
+                    {
+                        if (arg.StartsWith("@"))
+                        {
+                            if (!VarnameLocalizer.locals.ContainsKey(lambda.lambdaRef + "." + arg.Substring(1)))
+                            {
+                                VarnameLocalizer.locals.Add(lambda.lambdaRef + "." + arg.Substring(1), VarnameLocalizer.locals.Count);
+                            }
+                            sb.AppendLine("STPTR " + VarnameLocalizer.locals[lambda.lambdaRef + "." + arg.Substring(1)]);
+                        }
+                        else
+                        {
+                            if (!VarnameLocalizer.locals.ContainsKey(lambda.lambdaRef + "." + arg))
+                            {
+                                VarnameLocalizer.locals.Add(lambda.lambdaRef + "." + arg, VarnameLocalizer.locals.Count);
+                            }
+                            sb.AppendLine("STLOC " + VarnameLocalizer.locals[lambda.lambdaRef + "." + arg]);
+                        }
+                    }
+
+                    foreach (STMT st in lambda.body)
+                    {
+                        sb.Append(st.ToAsm(lambda.lambdaRef));
+                    }
+
+                    sb.AppendLine("RET");
+                }
+                return sb.ToString();
+            }
+        }
     }
 }

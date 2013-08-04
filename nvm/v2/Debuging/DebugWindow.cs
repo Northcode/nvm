@@ -64,13 +64,19 @@ namespace nvm.v2.Debuging
                 }
             });
             fix.InvokeIfRequired(NumIp, () => NumIp.Value = debugger.process.IP);
-            byte opCV = debugger.process.Memory.Read(debugger.process.IP);
-            string opCN = VM.opcodes[opCV].Name;
-            fix.InvokeIfRequired(txtopCode, () => { txtopCode.Text = opCN + " (" + opCV + ")"; });
-            fix.InvokeIfRequired(textBox1, () => textBox1.Text = debugger.DisAssembler.ToString());
-            fix.InvokeIfRequired(textBox1, () => { textBox1.SelectionStart = debugger.DisAssembler.Length - 1; textBox1.ScrollToCaret(); });
-            fix.InvokeIfRequired(stackTop, () => { if (debugger.process.stack.Count > 0) { stackTop.Text = debugger.process.stack.Peek().ToString(); } });
-            debugger.process.STEP = checkBox1.Checked;
+            //try
+            //{
+                byte opCV = debugger.process.Memory.Read(debugger.process.IP);
+                string opCN = VM.opcodes[opCV].Name;
+                fix.InvokeIfRequired(txtopCode, () => { txtopCode.Text = opCN + " (" + opCV + ")"; });
+                fix.InvokeIfRequired(textBox1, () => textBox1.Text = debugger.DisAssembler.ToString());
+                fix.InvokeIfRequired(textBox1, () => { textBox1.SelectionStart = debugger.DisAssembler.Length - 1; textBox1.ScrollToCaret(); });
+                fix.InvokeIfRequired(stackTop, () => { if (debugger.process.stack.Count > 0) { stackTop.Text = debugger.process.stack.Peek().ToString(); } });
+                debugger.process.STEP = checkBox1.Checked;
+            //}
+            //catch
+            //{
+            //}
         }
 
         private void button1_Click(object sender, EventArgs e)

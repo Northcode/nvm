@@ -39,6 +39,7 @@ namespace ncc
             StringBuilder sba = new StringBuilder();
             sba.AppendLine("LOCALCNT " + VarnameLocalizer.locals.Count);
             sba.AppendLine(sb.ToString());
+            sba.AppendLine(LambdaHolder.WriteLambdas());
             sba.AppendLine("END");
             Console.WriteLine("----------------- ASM CODE -------------------------");
             Console.Write(sba.ToString());

@@ -1,9 +1,7 @@
-﻿main()
+﻿main0()
 	debug()
-	txt = "Hi!"
-	f = array[4]
-	@f[0] = @txt
-	prt(f[0])
+	@p = <a> prt("LAMBDA!!!") end
+	p()
 	debug()
 	trm()
 end

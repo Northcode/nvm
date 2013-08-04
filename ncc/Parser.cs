@@ -142,6 +142,26 @@ namespace ncc
                 e = new stringlit() { value = tokens[i].val as string };
                 i++;
             }
+            else if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == '<')
+            {
+                i++;
+                List<string> fargs = new List<string>();
+                while (i < tokens.Length && !(tokens[i].type == TokenType.symbol && (char)tokens[i].val == '>'))
+                {
+                    if (tokens[i].type == TokenType.word)
+                    {
+                        fargs.Add(tokens[i].val as string);
+                    }
+                    i++;
+                }
+                i++;
+                bool lnfc = infnc;
+                infnc = true;
+                STMT[] body = ParseBody();
+                infnc = lnfc;
+
+                e = new LambdaExpr() { args = fargs.ToArray(), body = body };
+            }
             else if (tokens[i].type == TokenType.word && tokens[i].val as string == "array" && tokens[i + 1].type == TokenType.symbol && (char)tokens[i + 1].val == '[')
             {
                 i += 2;
