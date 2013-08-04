@@ -15,6 +15,7 @@ namespace ncc
         static void Main(string[] args)
         {
             string c = File.ReadAllText("testlang.txt");
+
             Scanner s = new Scanner(c);
             s.Scan();
             foreach (Token t in s.tokens)
@@ -36,10 +37,11 @@ namespace ncc
                 sb.Append(st.ToAsm(""));
             }
 
+            sb.AppendLine(LambdaHolder.WriteLambdas());
+
             StringBuilder sba = new StringBuilder();
             sba.AppendLine("LOCALCNT " + VarnameLocalizer.locals.Count);
             sba.AppendLine(sb.ToString());
-            sba.AppendLine(LambdaHolder.WriteLambdas());
             sba.AppendLine("END");
             Console.WriteLine("----------------- ASM CODE -------------------------");
             Console.Write(sba.ToString());
@@ -61,6 +63,7 @@ namespace ncc
             v.metadata = a.programMeta;
             v.Run();
             Console.ReadKey();
+            Environment.Exit(0);
         }
     }
 }

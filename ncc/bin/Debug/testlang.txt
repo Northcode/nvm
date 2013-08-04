@@ -1,21 +1,3 @@
-﻿main0()
-	debug()
-	@p = <a> prt("LAMBDA!!!") end
-	p()
-	debug()
-	trm()
+﻿main()
+	exit()
 end
-
-debug() asm "DEBUG" end
-
-prt(o)
-	o
-	prts()
-	.free o
-end
-
-prts()
-	asm "SYSF_PRINT"
-end
-
-trm() asm "END" end

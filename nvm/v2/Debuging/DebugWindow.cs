@@ -22,7 +22,7 @@ namespace nvm.v2.Debuging
 
         private void DebugWindow_Load(object sender, EventArgs e)
         {
-
+            this.Location = new Point(0, 0);
         }
 
         public void Update()

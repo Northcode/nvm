@@ -659,8 +659,11 @@ namespace nvm.v2
                 new OpCode() {
                     Name = "RET", BYTECODE = 0x1f,
                     Run = (m) => {
-                        Tuple<uint, int> c = m.callstack.Pop();
-                        m.IP = c.Item1;
+                        if(m.callstack.Count > 0)
+                        {
+                            Tuple<uint, int> c = m.callstack.Pop();
+                            m.IP = c.Item1;
+                        }
                         if (m.DEBUG)
                         {
                             m.debugger.DisAssembler.AppendLine("RET");
