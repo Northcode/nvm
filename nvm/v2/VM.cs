@@ -8,14 +8,21 @@ namespace nvm.v2
 {
     public class VM
     {
+        //Stack & flags
         internal Stack<object> stack;
         internal Stack<Tuple<uint, int>> callstack;
         internal uint IP;
+        internal bool RN;
+
+        //Memory stuff
         internal Buffer Memory;
         internal uint[] locals;
-        internal bool RN;
+
+        internal uint stackstart;
         internal uint heapstart;
         internal List<MemChunk> freeList;
+        
+        //Debug stuff
         public ProgramMeta metadata;
         internal bool DEBUG;
         internal bool STEP;
@@ -24,13 +31,14 @@ namespace nvm.v2
         internal static OpCode[] opcodes;
         internal static Interupt[] interups;
 
-        public VM(byte[] Program)
+        public VM(NcAssembly Program)
         {
             stack = new Stack<object>();
             callstack = new Stack<Tuple<uint, int>>();
             IP = 0;
-            Memory = new Buffer(Program.Length + 4 * Buffer.KB, Program);
-            heapstart = (uint)Program.Length + 32;
+            Memory = new Buffer(Program.code.Length + 4 * Buffer.KB, Program.code);
+            stackstart = (uint)Program.code.Length + 32;
+            heapstart = (uint)(stackstart + Program.localcount * 4 + 32);
             locals = new uint[50];
             freeList = new List<MemChunk>();
             freeList.Add(new MemChunk() { chunkstart = heapstart, size = (int)(Memory.Size - heapstart - 1) });

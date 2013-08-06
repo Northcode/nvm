@@ -96,6 +96,7 @@
     <Compile Include="v2\Fixes\fix.cs" />
     <Compile Include="v2\Interupt.cs" />
     <Compile Include="v2\MemChunk.cs" />
+    <Compile Include="v2\NcAssembly.cs" />
     <Compile Include="v2\OpCode.cs" />
     <Compile Include="v2\ProgramMeta.cs" />
     <Compile Include="v2\ValueTypeCodes.cs" />
