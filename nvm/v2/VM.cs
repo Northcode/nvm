@@ -179,8 +179,9 @@ namespace nvm.v2
                     Name = "LOCALHEAP", BYTECODE = 0x05,
                     Run = (m) => {
                         int c = m.Memory.ReadInt(m.IP); m.IP += 4;
-                        uint addr = m.MAlloc(c * 4 + 4);
-                        var v = new Tuple<uint,uint>(m.callstack.Pop().Item1,addr);
+                        uint addr = m.MAlloc(c * 4 + 8);
+                        m.Memory.Write(addr, c);
+                        var v = new Tuple<uint,uint>(m.callstack.Pop().Item1,addr + 4);
                         m.callstack.Push(v);
                         if (m.DEBUG)
                         {
@@ -684,6 +685,8 @@ namespace nvm.v2
                         {
                             Tuple<uint, uint> c = m.callstack.Pop();
                             m.IP = c.Item1;
+                            int size = m.Memory.ReadInt(c.Item2 - 4);
+                            m.Free(c.Item2 - 4, (int)c.Item2 * 4 + 8);
                         }
                         if (m.DEBUG)
                         {

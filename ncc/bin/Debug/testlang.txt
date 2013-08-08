@@ -1,6 +1,5 @@
 ﻿main()
-	txt = "hello world!"
-	prt(txt)
+	
 	exit()
 end
 
