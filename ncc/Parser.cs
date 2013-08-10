@@ -95,6 +95,8 @@ namespace ncc
                 STMT[] body = ParseBody();
                 infnc = false;
 
+                VarnameLocalizer.functions.Add(fname);
+
                 return new function() { fname = fname, args = fargs.ToArray(), body = body };
             }
             else if (tokens[i].type == TokenType.word && tokens[i].val as string == "end")
@@ -139,6 +141,30 @@ namespace ncc
             {
                 e = new stringlit() { value = tokens[i].val as string };
                 i++;
+            }
+            else if (tokens[i].type == TokenType.word && tokens[i].val as string == "array" && tokens[i + 1].type == TokenType.symbol && (char)tokens[i + 1].val == '[')
+            {
+                i += 2;
+                EXPR count = ParseExpr(isArithExpr);
+                i++;
+                e = new ArrayInitializer() { count = count };
+            }
+            else if (tokens[i].type == TokenType.word && tokens[i + 1].type == TokenType.symbol && (char)tokens[i + 1].val == '[')
+            {
+                string varname = tokens[i].val as string;
+                i += 2;
+                EXPR index = ParseExpr(isArithExpr);
+                i++;
+                if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == '=')
+                {
+                    i++;
+                    EXPR val = ParseExpr(isArithExpr);
+                    e = new ArrayStrElem() { varname = varname, index = index, value = val };
+                }
+                else
+                {
+                    e = new ArrayGetElem() { varname = varname, index = index };
+                }
             }
             else if (i + 1 < tokens.Length && tokens[i + 1].type == TokenType.symbol && (char)tokens[i + 1].val == '(')
             {
@@ -193,7 +219,7 @@ namespace ncc
 
                 while (true)
                 {
-                    if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')')
+                    if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')' && parentCount > 0)
                     {
                         while (stk.Count > 0 && (char)stk.Peek().val != '(')
                         {
@@ -201,13 +227,16 @@ namespace ncc
                         }
                         stk.Pop();
                         i++;
+                        parentCount--;
                     }
                     else if (tokens[i].IsArithOp())
                     {
                         if (stk.Count > 0 && tokens[i].ArithOpPriority() < stk.Peek().ArithOpPriority())
                         {
-                            if((char)stk.Peek().val != '(')
+                            if ((char)stk.Peek().val != '(')
                                 finalexpr.Add(stk.Pop().ToArith());
+                            else
+                                parentCount++;
                         }
                         stk.Push(tokens[i]);
                         lastwasop = true;

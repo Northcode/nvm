@@ -1,10 +1,9 @@
 ﻿main()
 	debug()
-	a = array(4)
-	array_str(@a,0,"test")
-	t = array_ld(@a,0)
-	@t = t
-	prt(t)
+	txt = "Hi!"
+	f = array[4]
+	@f[0] = @txt
+	prt(f[0])
 	debug()
 	trm()
 end
@@ -15,25 +14,6 @@ prt(o)
 	o
 	prts()
 	.free o
-end
-
-array(l)
-	l
-	asm "ARRAY"
-	.free l
-end
-
-array_str(@array,index,object)
-	@array
-	index
-	object
-	asm "ST_ELEM"
-end
-
-array_ld(@array,index)
-	@array
-	index
-	asm "LD_ELEM"
 end
 
 prts()

@@ -358,7 +358,14 @@ namespace nvm.v2
                         int index = (int)m.stack.Pop();
                         uint array = (uint)m.stack.Pop();
                         uint addr = m.Alloc(o);
+                        int asize = m.Memory.ReadInt(array);
+                        if(index < asize) {
                         m.Memory.Write((uint)(array + 4 + index * 4),addr);
+                        }
+                        else
+                        {
+                            throw new IndexOutOfRangeException("Index " + index + " was outside the bounds " + asize + " of the array " + array);
+                        }
                         if (m.DEBUG)
                         {
                             m.debugger.DisAssembler.AppendLine("ST_ELEM");
@@ -371,7 +378,14 @@ namespace nvm.v2
                         uint paddr = (uint)m.stack.Pop();
                         int index = (int)m.stack.Pop();
                         uint array = (uint)m.stack.Pop();
-                        m.Memory.Write((uint)(array + 4 + index * 4),paddr);
+                        int asize = m.Memory.ReadInt(array);
+                        if(index < asize) {
+                            m.Memory.Write((uint)(array + 4 + index * 4),paddr);
+                        }
+                        else
+                        {
+                            throw new IndexOutOfRangeException("Index " + index + " was outside the bounds " + asize + " of the array " + array);
+                        }
                         if (m.DEBUG)
                         {
                             m.debugger.DisAssembler.AppendLine("ST_ELEM_PTR");
@@ -383,8 +397,15 @@ namespace nvm.v2
                     Run = (m) => {
                         int index = (int)m.stack.Pop();
                         uint array = (uint)m.stack.Pop();
+                        int asize = m.Memory.ReadInt(array);
+                        if(index < asize) {
                         uint raddr = m.Memory.ReadUInt((uint)(array + 4 + index * 4));
                         m.stack.Push(raddr);
+                        }
+                        else
+                        {
+                            throw new IndexOutOfRangeException("Index " + index + " was outside the bounds " + asize + " of the array " + array);
+                        }
                         if (m.DEBUG)
                         {
                             m.debugger.DisAssembler.AppendLine("LD_ELEM");
@@ -840,6 +861,60 @@ namespace nvm.v2
                             m.debugger.DisAssembler.AppendLine("DEBUG");
                         }
                     }
+                },
+                new OpCode() {
+                    Name = "CALLS", BYTECODE = 0x25,
+                    Run = (m) => {
+                        if(m.stack.Count > 0)
+                        {
+                            uint addr = (uint)m.stack.Pop();
+                            if (m.DEBUG)
+                            {
+                                if (m.metadata.functionData.ContainsKey(addr))
+                                {
+                                    m.debugger.DisAssembler.AppendLine("CALLS (" + addr + " : " + m.metadata.functionData[addr] + ")");
+                                }
+                                else
+                                {
+                                    m.debugger.DisAssembler.AppendLine("CALLS (" + addr + ")");
+                                }
+                            }
+                            if (addr != 0)
+                            {
+                                m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
+                                m.IP = addr;
+                            }
+                            else
+                            {
+                                Console.WriteLine("ERROR: CANNOT JMP TO ADDRESS 0");
+                            }
+                        }
+                    }
+                },
+                new OpCode() {
+                    Name = "JMPS", BYTECODE = 0x26,
+                    Run = (m) => {
+                        uint addr = (uint)m.stack.Pop();
+                        if(m.DEBUG)
+                        {
+                            if (m.metadata.functionData.ContainsKey(addr))
+                            {
+                                m.debugger.DisAssembler.AppendLine("JMPS (" + addr + " : " + m.metadata.functionData[addr] + ")");
+                            }
+                            else
+                            {
+                                m.debugger.DisAssembler.AppendLine("JMPS (" + addr + ")");
+                            }
+                        }
+                        if(addr != 0) 
+                        {
+                            m.IP = addr;
+                        }
+                        else
+                        {
+                            Console.WriteLine("ERROR: CANNOT JMP TO ADDRESS 0");
+                        }
+                    }
                 }
             };
         }
@@ -893,6 +968,8 @@ namespace nvm.v2
         {
             int i = AllocFindChunk(size);
             uint addr = freeList[i].chunkstart;
+            uint naddr = (uint)(addr + size + 2);
+            freeList[i].chunkstart = naddr;
             return addr;
         }
 

@@ -51,6 +51,8 @@ namespace ncc
         {
             public static Dictionary<string, int> locals = new Dictionary<string,int>();
 
+            public static List<string> functions = new List<string>();
+
             internal static Dictionary<int, string> GetLocalMeta()
             {
                 Dictionary<int, string> meta = new Dictionary<int, string>();
@@ -129,6 +131,10 @@ namespace ncc
                 else if (VarnameLocalizer.locals.ContainsKey(varname))
                 {
                     sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                }
+                else if (VarnameLocalizer.functions.Contains(varname))
+                {
+                    sb.AppendLine("PUSH uint :" + varname);
                 }
                 else
                 {
@@ -230,7 +236,20 @@ namespace ncc
                     sb.AppendLine(args[i].ToAsm(scope));
                 }
 
-                sb.AppendLine("CALL :" + fname);
+                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname))
+                {
+                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname]);
+                    sb.AppendLine("CALLS");
+                }
+                else if (VarnameLocalizer.locals.ContainsKey(fname))
+                {
+                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[fname]);
+                    sb.AppendLine("CALLS");
+                }
+                else
+                {
+                    sb.AppendLine("CALL :" + fname);
+                }
                 return sb.ToString();
             }
         }
@@ -328,6 +347,109 @@ namespace ncc
             public string ToAsm(string scope)
             {
                 throw new NotImplementedException("THIS ISN'T SUPPOSED TO HAPPEN!!");
+            }
+        }
+
+        class ArrayInitializer : EXPR
+        {
+            public EXPR count;
+
+            public string ToAsm(string scope)
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(count.ToAsm(scope));
+                sb.AppendLine("ARRAY");
+                return sb.ToString();
+            }
+        }
+
+        class ArrayGetElem : EXPR
+        {
+            public string varname;
+            public EXPR index;
+
+            public string ToAsm(string scope)
+            {
+                StringBuilder sb = new StringBuilder();
+
+                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
+                {
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                }
+                else if (VarnameLocalizer.locals.ContainsKey(varname))
+                {
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                }
+                else
+                {
+                    throw new Exception("Variable " + varname + " not found");
+                }
+
+                sb.Append(index.ToAsm(scope));
+                sb.AppendLine("LD_ELEM");
+
+                if (!varname.StartsWith("@"))
+                {
+                    sb.AppendLine("LDADDR");
+                }
+
+                return sb.ToString();
+            }
+        }
+
+        class ArrayStrElem : EXPR
+        {
+            public string varname;
+            public EXPR index;
+            public EXPR value;
+
+            public string ToAsm(string scope)
+            {
+                StringBuilder sb = new StringBuilder();
+                if (varname.StartsWith("@"))
+                {
+                    if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname.Substring(1)))
+                    {
+                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname.Substring(1)]);
+                    }
+                    else if (VarnameLocalizer.locals.ContainsKey(varname.Substring(1)))
+                    {
+                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                    }
+                    else
+                    {
+                        throw new Exception("Variable " + varname + " not found");
+                    }
+                }
+                else
+                {
+                    if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
+                    {
+                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                    }
+                    else if (VarnameLocalizer.locals.ContainsKey(varname))
+                    {
+                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                    }
+                    else
+                    {
+                        throw new Exception("Variable " + varname + " not found");
+                    }
+                }
+
+                sb.Append(index.ToAsm(scope));
+                sb.Append(value.ToAsm(scope));
+
+                if (varname.StartsWith("@"))
+                {
+                    sb.AppendLine("ST_ELEM_PTR");
+                }
+                else
+                {
+                    sb.AppendLine("ST_ELEM");
+                }
+
+                return sb.ToString();
             }
         }
     }
