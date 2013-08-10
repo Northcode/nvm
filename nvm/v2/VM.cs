@@ -686,7 +686,7 @@ namespace nvm.v2
                             Tuple<uint, uint> c = m.callstack.Pop();
                             m.IP = c.Item1;
                             int size = m.Memory.ReadInt(c.Item2 - 4);
-                            m.Free(c.Item2 - 4, (int)c.Item2 * 4 + 8);
+                            m.Free(c.Item2 - 4, size * 4 + 8);
                         }
                         if (m.DEBUG)
                         {
@@ -954,6 +954,8 @@ namespace nvm.v2
                 uint addr = freeList[i].chunkstart;
                 uint naddr = addr + 2;
                 freeList[i].chunkstart = naddr;
+                int nsize = freeList[i].size - 2;
+                freeList[i].size = nsize;
                 Memory.Write(addr, ValueTypeCodes.BYTE);
                 Memory.Write(addr + 1, (byte)val);
                 return addr;
@@ -964,6 +966,8 @@ namespace nvm.v2
                 uint addr = freeList[i].chunkstart;
                 uint naddr = addr + 5;
                 freeList[i].chunkstart = naddr;
+                int nsize = freeList[i].size - 5;
+                freeList[i].size = nsize;
                 Memory.Write(addr, ValueTypeCodes.INT);
                 Memory.Write(addr + 1, (int)val);
                 return addr;
@@ -974,6 +978,8 @@ namespace nvm.v2
                 uint addr = freeList[i].chunkstart;
                 uint naddr = addr + 5;
                 freeList[i].chunkstart = naddr;
+                int nsize = freeList[i].size - 5;
+                freeList[i].size = nsize;
                 Memory.Write(addr, ValueTypeCodes.UINT);
                 Memory.Write(addr + 1, (uint)val);
                 return addr;
@@ -984,6 +990,8 @@ namespace nvm.v2
                 uint addr = freeList[i].chunkstart;
                 uint naddr = (uint)(addr + (val as string).Length + 2);
                 freeList[i].chunkstart = naddr;
+                int nsize = freeList[i].size - ((val as string).Length + 2);
+                freeList[i].size = nsize;
                 Memory.Write(addr, ValueTypeCodes.STRING);
                 Memory.Write(addr + 1, (val as string));
                 return addr;
@@ -995,8 +1003,10 @@ namespace nvm.v2
         {
             int i = AllocFindChunk(size);
             uint addr = freeList[i].chunkstart;
-            uint naddr = (uint)(addr + size + 2);
+            uint naddr = (uint)(addr + size);
+            int nsize = freeList[i].size - size;
             freeList[i].chunkstart = naddr;
+            freeList[i].size = nsize;
             return addr;
         }
 

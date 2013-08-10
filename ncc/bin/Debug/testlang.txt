@@ -1,6 +1,16 @@
 ﻿main()
-	
+	debug()
+	a = 3
+	prt(a)
+	modify(@a)
+	prt(a)
+	debug()
 	exit()
+end
+
+modify(@a)
+	c = 4
+	@a = @c
 end
 
 prts() asm "SYSF_PRINT" end
@@ -8,5 +18,7 @@ prts() asm "SYSF_PRINT" end
 prt(o) o prts() end
 
 exit() asm "END" end
+
+debug() asm "DEBUG" end
 
 read() asm "SYSF_READLN" end

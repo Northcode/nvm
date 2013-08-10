@@ -80,7 +80,7 @@ namespace ncc
             {
                 if (!ContainsVar(varname, scope))
                 {
-                    currentfunctions.Peek().locals.Add((scope != "" ? scope + "." : "") + varname, locals.Count);
+                    currentfunctions.Peek().locals.Add((scope != "" ? scope + "." : "") + varname, currentfunctions.Peek().locals.Count);
                     locals.Add((scope != "" ? scope + "." : "") + varname, locals.Count);
                 }
                 return currentfunctions.Peek().locals[(scope != "" ? scope + "." : "") + varname];
