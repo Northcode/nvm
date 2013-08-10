@@ -1,112 +1,43 @@
-﻿asm "DEBUG"
-int = 0x03
-uint = 0x04
-string = 0x07
-
-test()
-	a = "Hello "
-	b = "World!"
-	c = strcat(@a,b)
-	prt(c)
-	term()
+﻿main()
+	debug()
+	a = array(4)
+	array_str(@a,0,"test")
+	t = array_ld(@a,0)
+	@t = t
+	prt(t)
+	debug()
+	trm()
 end
 
-prt(a)
-	a
+debug() asm "DEBUG" end
+
+prt(o)
+	o
 	prts()
+	.free o
 end
 
-debug()
-	asm "DEBUG"
+array(l)
+	l
+	asm "ARRAY"
+	.free l
+end
+
+array_str(@array,index,object)
+	@array
+	index
+	object
+	asm "ST_ELEM"
+end
+
+array_ld(@array,index)
+	@array
+	index
+	asm "LD_ELEM"
 end
 
 prts()
 	asm "SYSF_PRINT"
 end
 
-input()
-	asm "SYSF_READLN"
-end
-
-m_alloc(size)
-    size
-    asm "MALLOC"
-	.free size
-end
-
-m_free(addr,size)
-    cast(addr,uint)
-    size
-    asm "FREE"
-	.free addr
-	.free size
-end
-
-m_write(addr,o)
-    o
-    cast(addr,0x04)
-    asm "MEMW"
-	.free addr
-	.free o
-end
-
-m_read(addr,type)
-    cast(addr,0x04)
-    type
-    asm "MEMR"
-	.free addr
-	.free type
-end
-
-cast(a,t)
-	a
-	t
-	asm "CAST"
-	.free a
-	.free t
-end
-
-strcat(@a,b)
-	la = sizeof(a)
-	lb = sizeof(b)
-	l = add(la,lb)
-	l = sub(l,1)
-	addr = m_alloc(l)
-	m_write(addr,0x07)
-	na = add(addr,1)
-	m_write(na,a)
-	ln = sub(la,1)
-	na = add(na,ln)
-	debug()
-	m_write(na,b)
-
-end
-
-sizeof(o)
-	o asm "SIZEOF" .free o
-end
-
-addp(@a,@b)
-	a b	a = asm "ADD"
-end
-
-add(a,b)
-	cast(a,0x03)
-	cast(b,0x03)
-	asm "ADD"
-	.free a
-	.free b
-end
-
-sub(a,b)
-	cast(a,0x03)
-	cast(b,0x03)
-	asm "SUB"
-	.free a
-	.free b
-end
-
-term()
-	asm "DEBUG"
-	asm "END"
-end
+trm() asm "END" end

@@ -267,5 +267,68 @@ namespace ncc
                 return asmtxt + "\n";
             }
         }
+
+        class arith_expr : EXPR
+        {
+            public EXPR[] exprs;
+
+            public string ToAsm(string scope)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (EXPR e in exprs)
+                {
+                    sb.AppendLine(e.ToAsm(scope));
+                }
+                return sb.ToString();
+            }
+        }
+
+        class add : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                return "ADD";
+            }
+        }
+
+        class sub : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                return "SUB";
+            }
+        }
+
+        class mul : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                return "MUL";
+            }
+        }
+
+        class div : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                return "DIV";
+            }
+        }
+
+        class mod : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                return "MOD";
+            }
+        }
+
+        class tmp_paran : EXPR
+        {
+            public string ToAsm(string scope)
+            {
+                throw new NotImplementedException("THIS ISN'T SUPPOSED TO HAPPEN!!");
+            }
+        }
     }
 }

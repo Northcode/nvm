@@ -20,3 +20,14 @@ C:\Users\Andreas Larsen\Programming\nvm\ncc\bin\Debug\ncc.pdb
 C:\Users\Andreas Larsen\Programming\nvm\ncc\bin\Debug\nvm.exe
 C:\Users\Andreas Larsen\Programming\nvm\ncc\bin\Debug\nvm.pdb
 C:\Users\Andreas Larsen\Programming\nvm\ncc\obj\Debug\ncc.csprojResolveAssemblyReference.cache
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\ncc.exe.config
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\obj\Debug\ncc.exe
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\obj\Debug\ncc.pdb
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\testlang.txt
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\testcode.txt
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\test.txt
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\ncc.exe
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\ncc.pdb
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\nvm.exe
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\nvm.pdb
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\obj\Debug\ncc.csprojResolveAssemblyReference.cache

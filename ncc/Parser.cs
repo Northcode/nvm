@@ -60,7 +60,7 @@ namespace ncc
             {
                 string vname = tokens[i].val as string;
                 i += 2;
-                EXPR e = ParseExpr();
+                EXPR e = ParseExpr(false);
                 if (vname.StartsWith("@"))
                 {
                     setvarptr st = new setvarptr() { varname = vname.Substring(1), value = e };
@@ -105,7 +105,7 @@ namespace ncc
             else if (tokens[i].type == TokenType.word && tokens[i].val as string == "return")
             {
                 i++;
-                EXPR val = ParseExpr();
+                EXPR val = ParseExpr(false);
                 return new ret() { val = val };
             }
             else if (tokens[i].type == TokenType.word && tokens[i].val as string == ".free")
@@ -117,12 +117,12 @@ namespace ncc
             }
             else
             {
-                return ParseExpr();
+                return ParseExpr(false);
             }
             throw new Exception();
         }
 
-        EXPR ParseExpr()
+        EXPR ParseExpr(bool isArithExpr)
         {
             EXPR e = null;
             if (tokens[i].type == TokenType.byte_lit)
@@ -147,7 +147,7 @@ namespace ncc
                 List<EXPR> args = new List<EXPR>();
                 while (!(tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')'))
                 {
-                    EXPR ex = ParseExpr();
+                    EXPR ex = ParseExpr(isArithExpr);
                     if (ex != null)
                     {
                         args.Add(ex);
@@ -179,6 +179,60 @@ namespace ncc
                     e = new getvar() { varname = vname };
                 }
                 i++;
+            }
+
+            if (tokens[i].IsArithOp() && !isArithExpr)
+            {
+                List<EXPR> finalexpr = new List<EXPR>();
+                Stack<Token> stk = new Stack<Token>();
+
+                finalexpr.Add(e);
+
+                bool lastwasop = false;
+                int parentCount = 0;
+
+                while (true)
+                {
+                    if (tokens[i].type == TokenType.symbol && (char)tokens[i].val == ')')
+                    {
+                        while (stk.Count > 0 && (char)stk.Peek().val != '(')
+                        {
+                            finalexpr.Add(stk.Pop().ToArith());
+                        }
+                        stk.Pop();
+                        i++;
+                    }
+                    else if (tokens[i].IsArithOp())
+                    {
+                        if (stk.Count > 0 && tokens[i].ArithOpPriority() < stk.Peek().ArithOpPriority())
+                        {
+                            if((char)stk.Peek().val != '(')
+                                finalexpr.Add(stk.Pop().ToArith());
+                        }
+                        stk.Push(tokens[i]);
+                        lastwasop = true;
+                        i++;
+                    }
+                    else
+                    {
+                        if (lastwasop)
+                        {
+                            finalexpr.Add(ParseExpr(true));
+                            lastwasop = false;
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                while (stk.Count > 0)
+                {
+                    finalexpr.Add(stk.Pop().ToArith());
+                }
+
+                e = new arith_expr() { exprs = finalexpr.ToArray() };
             }
             return e;
         }

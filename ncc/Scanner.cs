@@ -15,6 +15,59 @@ namespace ncc
         {
             return "{ type: " + type.ToString() + " ; val: " + val.ToString() + " } ";
         }
+
+        public bool IsArithOp()
+        {
+            return (type == TokenType.symbol && ArithOpPriority() > 0);
+        }
+
+        public int ArithOpPriority()
+        {
+            if (((char)val) == '+' || ((char)val) == '-')
+            {
+                return 1;
+            }
+            else if (((char)val) == '*' || ((char)val) == '/' || ((char)val) == '%')
+            {
+                return 2;
+            }
+            else if (((char)val) == '(')
+            {
+                return 3;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public AST.EXPR ToArith()
+        {
+            if (((char)val) == '+')
+            {
+                return new AST.add();
+            }
+            else if (((char)val) == '-')
+            {
+                return new AST.sub();
+            }
+            else if (((char)val) == '*')
+            {
+                return new AST.mul();
+            }
+            else if (((char)val) == '/')
+            {
+                return new AST.div();
+            }
+            else if (((char)val) == '%')
+            {
+                return new AST.mod();
+            }
+            else
+            {
+                throw new InvalidCastException("Token is not arithmetic operator");
+            }
+        }
     }
 
     public enum TokenType
