@@ -1,3 +1,13 @@
 ﻿main()
+	txt = "hello world!"
+	prt(txt)
 	exit()
 end
+
+prts() asm "SYSF_PRINT" end
+
+prt(o) o prts() end
+
+exit() asm "END" end
+
+read() asm "SYSF_READLN" end

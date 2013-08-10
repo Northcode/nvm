@@ -16,12 +16,14 @@ namespace nvm.v2.Assembly
         internal Dictionary<string, uint> labels;
         internal List<Tuple<int, string>> labelcalls;
 
-        public byte[] Assemble()
+        public NcAssembly Assemble()
         {
             List<byte> result = new List<byte>();
 
             labels = new Dictionary<string,uint>();
             labelcalls = new List<Tuple<int,string>>();
+
+            int localcount = 0;
 
             code = code.Replace("\r", "");
 
@@ -48,7 +50,15 @@ namespace nvm.v2.Assembly
                     int i = 0;
                     ushort u = 0;
                     byte b = 0;
-                    if (int.TryParse(trimmed, out i))
+                    if (word == "LOCALCNT")
+	                {
+		                localcount = -1;
+	                }
+                    else if (localcount == -1)
+	                {
+                        localcount = Convert.ToInt32(word);
+	                }
+                    else if (int.TryParse(trimmed, out i))
                     {
                         byte[] vals = BitConverter.GetBytes(i);
                         result.AddRange(vals);
@@ -98,6 +108,13 @@ namespace nvm.v2.Assembly
                         {
                             result.Add(b);
                         }
+                        else
+                        {
+                            string nword = word.Replace("\\n", "\n").Replace("\\'", "\"");
+                            byte[] bytea = Encoding.ASCII.GetBytes(nword);
+                            result.AddRange(bytea);
+                            result.Add((byte)0x00);
+                        }
                     }
                     else if (trimmed.StartsWith("s"))
                     {
@@ -106,6 +123,13 @@ namespace nvm.v2.Assembly
                         {
                             byte[] vals = BitConverter.GetBytes(u);
                             result.AddRange(vals);
+                        }
+                        else
+                        {
+                            string nword = word.Replace("\\n", "\n").Replace("\\'", "\"");
+                            byte[] bytea = Encoding.ASCII.GetBytes(nword);
+                            result.AddRange(bytea);
+                            result.Add((byte)0x00);
                         }
                     }
                     else
@@ -135,7 +159,9 @@ namespace nvm.v2.Assembly
                 }
             }
 
-            return result.ToArray();
+            NcAssembly assembly = new NcAssembly();
+            assembly.code = result.ToArray();
+            return assembly;
         }
     }
 }

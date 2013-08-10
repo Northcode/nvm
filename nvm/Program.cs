@@ -46,7 +46,7 @@ namespace nvm.v2
 
             Assembler a = new Assembler();
             a.code = File.ReadAllText("testcode.txt");
-            byte[] code = a.Assemble();
+            NcAssembly code = a.Assemble();
 
             Console.Clear();
 

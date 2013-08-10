@@ -91,13 +91,18 @@ namespace ncc
                     i++;
                 }
                 i++;
+
+                function fnc = new function() { fname = fname, args = fargs.ToArray() };
+
+                VarnameLocalizer.functions.Add(fname);
+
                 infnc = true;
                 STMT[] body = ParseBody();
                 infnc = false;
 
-                VarnameLocalizer.functions.Add(fname);
+                fnc.body = body;
 
-                return new function() { fname = fname, args = fargs.ToArray(), body = body };
+                return fnc;
             }
             else if (tokens[i].type == TokenType.word && tokens[i].val as string == "end")
             {

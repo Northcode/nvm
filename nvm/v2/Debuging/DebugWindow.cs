@@ -27,42 +27,42 @@ namespace nvm.v2.Debuging
 
         public void Update()
         {
-            fix.InvokeIfRequired(varList, () =>
-            {
-                varList.Items.Clear();
-                for (int i = 0; i < debugger.process.locals.Length; i++)
-                {
-                    uint u = debugger.process.locals[i];
-                    if (u != 0)
-                    {
-                        byte t = debugger.process.Memory.Read(u);
-                        if (t == ValueTypeCodes.BYTE)
-                        {
-                            byte b = debugger.process.Memory.Read(u + 1);
-                            string varname = debugger.process.metadata.localData[i];
-                            varList.Items.Add(varname + " (" + i + ") = " + b);
-                        }
-                        else if (t == ValueTypeCodes.INT)
-                        {
-                            int b = debugger.process.Memory.ReadInt(u + 1);
-                            string varname = debugger.process.metadata.localData[i];
-                            varList.Items.Add(varname + " (" + i + ") = " + b);
-                        }
-                        else if (t == ValueTypeCodes.UINT)
-                        {
-                            uint b = debugger.process.Memory.ReadUInt(u + 1);
-                            string varname = debugger.process.metadata.localData[i];
-                            varList.Items.Add(varname + " (" + i + ") = " + b);
-                        }
-                        else if (t == ValueTypeCodes.STRING)
-                        {
-                            string b = debugger.process.Memory.ReadString(u + 1);
-                            string varname = debugger.process.metadata.localData[i];
-                            varList.Items.Add(varname + " (" + i + ") = " + b);
-                        }
-                    }
-                }
-            });
+            //fix.InvokeIfRequired(varList, () =>
+            //{
+            //  varList.Items.Clear();
+                //for (int i = 0; i < debugger.process.locals.Length; i++)
+                //{
+                //    uint u = debugger.process.locals[i];
+                //    if (u != 0)
+                //    {
+                //        byte t = debugger.process.Memory.Read(u);
+                //        if (t == ValueTypeCodes.BYTE)
+                //        {
+                //            byte b = debugger.process.Memory.Read(u + 1);
+                //            string varname = debugger.process.metadata.localData[i];
+                //            varList.Items.Add(varname + " (" + i + ") = " + b);
+                //        }
+                //        else if (t == ValueTypeCodes.INT)
+                //        {
+                //            int b = debugger.process.Memory.ReadInt(u + 1);
+                //            string varname = debugger.process.metadata.localData[i];
+                //            varList.Items.Add(varname + " (" + i + ") = " + b);
+                //        }
+                //        else if (t == ValueTypeCodes.UINT)
+                //        {
+                //            uint b = debugger.process.Memory.ReadUInt(u + 1);
+                //            string varname = debugger.process.metadata.localData[i];
+                //            varList.Items.Add(varname + " (" + i + ") = " + b);
+                //        }
+                //        else if (t == ValueTypeCodes.STRING)
+                //        {
+                //            string b = debugger.process.Memory.ReadString(u + 1);
+                //            string varname = debugger.process.metadata.localData[i];
+                //            varList.Items.Add(varname + " (" + i + ") = " + b);
+                //        }
+                //    }
+                //}
+            //});
             fix.InvokeIfRequired(NumIp, () => NumIp.Value = debugger.process.IP);
             //try
             //{

@@ -1,0 +1,14 @@
+﻿prts:
+SYSF_PRINT
+RET
+prt:
+STLOC 0
+LDLOC 0
+CALL :prts
+RET
+exit:
+END
+RET
+read:
+SYSF_READLN
+RET

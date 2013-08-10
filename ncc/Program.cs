@@ -26,25 +26,11 @@ namespace ncc
             Parser p = new Parser(s.tokens.ToArray());
             p.Parse();
 
-            foreach (STMT st in p.stmts)
-            {
-                Console.WriteLine(st.GetType().Name);
-            }
+            CodeGenerator.astTree = p.stmts.ToArray();
+            string ILcode = CodeGenerator.GenerateNIL();
 
-            StringBuilder sb = new StringBuilder();
-            foreach (STMT st in p.stmts)
-            {
-                sb.Append(st.ToAsm(""));
-            }
-
-            sb.AppendLine(LambdaHolder.WriteLambdas());
-
-            StringBuilder sba = new StringBuilder();
-            sba.AppendLine("LOCALCNT " + VarnameLocalizer.locals.Count);
-            sba.AppendLine(sb.ToString());
-            sba.AppendLine("END");
             Console.WriteLine("----------------- ASM CODE -------------------------");
-            Console.Write(sba.ToString());
+            Console.Write(ILcode);
             Console.ReadKey();
 
             CompilerMeta cm = new CompilerMeta();
@@ -56,8 +42,8 @@ namespace ncc
             VM.InitOpcodes();
             Assembler a = new Assembler();
             a.CompilerMeta = cm;
-            a.code = sba.ToString();
-            byte[] code = a.Assemble();
+            a.code = ILcode;
+            NcAssembly code = a.Assemble();
 
             VM v = new VM(code);
             v.metadata = a.programMeta;

@@ -52,6 +52,7 @@ namespace ncc
             public static Dictionary<string, int> locals = new Dictionary<string,int>();
 
             public static List<string> functions = new List<string>();
+            public static Stack<function> currentfunctions = new Stack<function>();
 
             internal static Dictionary<int, string> GetLocalMeta()
             {
@@ -61,6 +62,28 @@ namespace ncc
                     meta.Add(item.Value, item.Key);
                 }
                 return meta;
+            }
+
+            internal static bool ContainsVar(string varname, string scope)
+            {
+                if (scope != "")
+                {
+                    return currentfunctions.Peek().locals.ContainsKey(scope + "." + varname);
+                }
+                else
+                {
+                    return currentfunctions.Peek().locals.ContainsKey(varname);
+                }
+            }
+
+            internal static int GetVar(string varname, string scope)
+            {
+                if (!ContainsVar(varname, scope))
+                {
+                    currentfunctions.Peek().locals.Add((scope != "" ? scope + "." : "") + varname, locals.Count);
+                    locals.Add((scope != "" ? scope + "." : "") + varname, locals.Count);
+                }
+                return currentfunctions.Peek().locals[(scope != "" ? scope + "." : "") + varname];
             }
         }
 
@@ -73,15 +96,14 @@ namespace ncc
             {
                 StringBuilder sb = new StringBuilder();
                 sb.AppendLine(value.ToAsm(scope));
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
+                if (VarnameLocalizer.ContainsVar(varname,scope))
                 {
-                    sb.AppendLine("FREELOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                    sb.AppendLine("STLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                    sb.AppendLine("FREELOC " + VarnameLocalizer.GetVar(varname, scope));
+                    sb.AppendLine("STLOC " + VarnameLocalizer.GetVar(varname, scope));
                 }
                 else
                 {
-                    VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + varname, VarnameLocalizer.locals.Count);
-                    sb.AppendLine("STLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                    sb.AppendLine("STLOC " + VarnameLocalizer.GetVar(varname, scope));
                 }
                 return sb.ToString();
             }
@@ -103,16 +125,7 @@ namespace ncc
                 {
                     sb.AppendLine(value.ToAsm(scope));
                 }
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
-                {
-                    //sb.AppendLine("FREELOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                    sb.AppendLine("STPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                }
-                else
-                {
-                    VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + varname, VarnameLocalizer.locals.Count);
-                    sb.AppendLine("STPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                }
+                sb.AppendLine("STPTR " + VarnameLocalizer.GetVar(varname, scope));
                 return sb.ToString();
             }
         }
@@ -124,13 +137,9 @@ namespace ncc
             public string ToAsm(string scope)
             {
                 StringBuilder sb = new StringBuilder();
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
+                if (VarnameLocalizer.ContainsVar(varname, scope))
                 {
-                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                }
-                else if (VarnameLocalizer.locals.ContainsKey(varname))
-                {
-                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.GetVar(varname,scope));
                 }
                 else if (VarnameLocalizer.functions.Contains(varname))
                 {
@@ -151,18 +160,7 @@ namespace ncc
             public string ToAsm(string scope)
             {
                 StringBuilder sb = new StringBuilder();
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
-                {
-                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                }
-                else if (VarnameLocalizer.locals.ContainsKey(varname))
-                {
-                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[varname]);
-                }
-                else
-                {
-                    throw new Exception("Failed to load pointer, Unknown variable: " + varname);
-                }
+                sb.AppendLine("LDPTR " + VarnameLocalizer.GetVar(varname, scope));
                 return sb.ToString();
             }
         }
@@ -172,38 +170,36 @@ namespace ncc
             public string fname;
             public string[] args;
             public STMT[] body;
+            public Dictionary<string,int> locals = new Dictionary<string,int>();
 
             public string ToAsm(string scope)
             {
                 StringBuilder sb = new StringBuilder();
 
-                sb.AppendLine(fname + ":");
-
+                VarnameLocalizer.currentfunctions.Push(this);
+                StringBuilder sbs = new StringBuilder();
                 foreach (string arg in args)
                 {
                     if (arg.StartsWith("@"))
                     {
-                        if (!VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1)))
-                        {
-                            VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1), VarnameLocalizer.locals.Count);
-                        }
-                        sb.AppendLine("STPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname + "." + arg.Substring(1)]);
+                        sbs.AppendLine("STPTR " + VarnameLocalizer.GetVar(arg.Substring(1), (scope != "" ? scope + "." : "") + fname));
                     }
                     else
                     {
-                        if (!VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname + "." + arg))
-                        {
-                            VarnameLocalizer.locals.Add((scope != "" ? scope + "." : "") + fname + "." + arg, VarnameLocalizer.locals.Count);
-                        }
-                        sb.AppendLine("STLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname + "." + arg]);
+                        sbs.AppendLine("STLOC " + VarnameLocalizer.GetVar(arg, (scope != "" ? scope + "." : "") + fname));
                     }
                 }
 
                 foreach (STMT st in body)
                 {
-                    sb.Append(st.ToAsm((scope != "" ? scope + "." : "") + fname));
+                    sbs.Append(st.ToAsm((scope != "" ? scope + "." : "") + fname));
                 }
 
+                VarnameLocalizer.currentfunctions.Pop();
+
+                sb.AppendLine(fname + ":");
+                sb.AppendLine("LOCALHEAP " + locals.Count.ToString());
+                sb.AppendLine(sbs.ToString());
                 sb.AppendLine("RET");
                 return sb.ToString();
             }
@@ -236,14 +232,9 @@ namespace ncc
                     sb.AppendLine(args[i].ToAsm(scope));
                 }
 
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + fname))
+                if (VarnameLocalizer.ContainsVar(fname,scope))
                 {
-                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + fname]);
-                    sb.AppendLine("CALLS");
-                }
-                else if (VarnameLocalizer.locals.ContainsKey(fname))
-                {
-                    sb.AppendLine("LDPTR " + VarnameLocalizer.locals[fname]);
+                    sb.AppendLine("LDPTR " + VarnameLocalizer.GetVar(fname, scope));
                     sb.AppendLine("CALLS");
                 }
                 else
@@ -269,9 +260,9 @@ namespace ncc
             public string ToAsm(string scope)
             {
                 StringBuilder sb = new StringBuilder();
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
+                if (VarnameLocalizer.ContainsVar(varname,scope))
                 {
-                    sb.AppendLine("FREELOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
+                    sb.AppendLine("FREELOC " + VarnameLocalizer.GetVar(varname, scope));
                 }
                 return sb.ToString();
             }
@@ -372,18 +363,7 @@ namespace ncc
             {
                 StringBuilder sb = new StringBuilder();
 
-                if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
-                {
-                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                }
-                else if (VarnameLocalizer.locals.ContainsKey(varname))
-                {
-                    sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
-                }
-                else
-                {
-                    throw new Exception("Variable " + varname + " not found");
-                }
+                sb.AppendLine("LDLOC " + VarnameLocalizer.GetVar(varname, scope));
 
                 sb.Append(index.ToAsm(scope));
                 sb.AppendLine("LD_ELEM");
@@ -408,33 +388,11 @@ namespace ncc
                 StringBuilder sb = new StringBuilder();
                 if (varname.StartsWith("@"))
                 {
-                    if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname.Substring(1)))
-                    {
-                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname.Substring(1)]);
-                    }
-                    else if (VarnameLocalizer.locals.ContainsKey(varname.Substring(1)))
-                    {
-                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
-                    }
-                    else
-                    {
-                        throw new Exception("Variable " + varname + " not found");
-                    }
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.GetVar(varname.Substring(1), scope));
                 }
                 else
                 {
-                    if (VarnameLocalizer.locals.ContainsKey((scope != "" ? scope + "." : "") + varname))
-                    {
-                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[(scope != "" ? scope + "." : "") + varname]);
-                    }
-                    else if (VarnameLocalizer.locals.ContainsKey(varname))
-                    {
-                        sb.AppendLine("LDLOC " + VarnameLocalizer.locals[varname]);
-                    }
-                    else
-                    {
-                        throw new Exception("Variable " + varname + " not found");
-                    }
+                    sb.AppendLine("LDLOC " + VarnameLocalizer.GetVar(varname, scope));
                 }
 
                 sb.Append(index.ToAsm(scope));
@@ -484,19 +442,11 @@ namespace ncc
                     {
                         if (arg.StartsWith("@"))
                         {
-                            if (!VarnameLocalizer.locals.ContainsKey(lambda.lambdaRef + "." + arg.Substring(1)))
-                            {
-                                VarnameLocalizer.locals.Add(lambda.lambdaRef + "." + arg.Substring(1), VarnameLocalizer.locals.Count);
-                            }
-                            sb.AppendLine("STPTR " + VarnameLocalizer.locals[lambda.lambdaRef + "." + arg.Substring(1)]);
+                            sb.AppendLine("STPTR " + VarnameLocalizer.GetVar(arg, lambda.lambdaRef));
                         }
                         else
                         {
-                            if (!VarnameLocalizer.locals.ContainsKey(lambda.lambdaRef + "." + arg))
-                            {
-                                VarnameLocalizer.locals.Add(lambda.lambdaRef + "." + arg, VarnameLocalizer.locals.Count);
-                            }
-                            sb.AppendLine("STLOC " + VarnameLocalizer.locals[lambda.lambdaRef + "." + arg]);
+                            sb.AppendLine("STLOC " + VarnameLocalizer.GetVar(arg, lambda.lambdaRef));
                         }
                     }
 

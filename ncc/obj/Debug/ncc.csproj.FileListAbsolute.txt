@@ -31,3 +31,4 @@ C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\ncc.pdb
 C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\nvm.exe
 C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\nvm.pdb
 C:\Users\Andreas\Documents\GitHub\nvm\ncc\obj\Debug\ncc.csprojResolveAssemblyReference.cache
+C:\Users\Andreas\Documents\GitHub\nvm\ncc\bin\Debug\system.txt

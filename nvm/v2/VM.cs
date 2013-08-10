@@ -10,15 +10,15 @@ namespace nvm.v2
     {
         //Stack & flags
         internal Stack<object> stack;
-        internal Stack<Tuple<uint, int>> callstack;
+
+        //Callstack: return address, localheap address
+        internal Stack<Tuple<uint, uint>> callstack;
         internal uint IP;
         internal bool RN;
 
         //Memory stuff
         internal Buffer Memory;
-        internal uint[] locals;
-
-        internal uint stackstart;
+        //internal uint[] locals;
         internal uint heapstart;
         internal List<MemChunk> freeList;
         
@@ -34,12 +34,11 @@ namespace nvm.v2
         public VM(NcAssembly Program)
         {
             stack = new Stack<object>();
-            callstack = new Stack<Tuple<uint, int>>();
+            callstack = new Stack<Tuple<uint, uint>>();
             IP = 0;
             Memory = new Buffer(Program.code.Length + 4 * Buffer.KB, Program.code);
-            stackstart = (uint)Program.code.Length + 32;
-            heapstart = (uint)(stackstart + Program.localcount * 4 + 32);
-            locals = new uint[50];
+            heapstart = (uint)(Program.code.Length + 32);
+            //locals = new uint[Program.localcount];
             freeList = new List<MemChunk>();
             freeList.Add(new MemChunk() { chunkstart = heapstart, size = (int)(Memory.Size - heapstart - 1) });
             DEBUG = false;
@@ -49,6 +48,7 @@ namespace nvm.v2
         {
             RN = true;
             STEP = false;
+            callstack.Push(new Tuple<uint,uint>(0, heapstart));
             while (RN)
             {
                 byte op = Memory.Read(IP); IP++;
@@ -120,7 +120,7 @@ namespace nvm.v2
                         }
                         if(addr != 0)
                         {
-                            m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
+                            m.callstack.Push(new Tuple<uint, uint>(m.IP, 0u));
                             m.IP = addr;
                         }
                         else
@@ -176,10 +176,12 @@ namespace nvm.v2
                     }
                 }, //-------------------
                 new OpCode() {
-                    Name = "LOCALCNT", BYTECODE = 0x05,
+                    Name = "LOCALHEAP", BYTECODE = 0x05,
                     Run = (m) => {
                         int c = m.Memory.ReadInt(m.IP); m.IP += 4;
-                        m.locals = new uint[c];
+                        uint addr = m.MAlloc(c * 4 + 4);
+                        var v = new Tuple<uint,uint>(m.callstack.Pop().Item1,addr);
+                        m.callstack.Push(v);
                         if (m.DEBUG)
                         {
                             m.debugger.DisAssembler.AppendLine("LOCALCNT " + c);
@@ -214,7 +216,9 @@ namespace nvm.v2
                         int v = m.Memory.ReadInt(m.IP); m.IP += 4;
                         object o = m.stack.Pop();
                         uint aaddr = m.Alloc(o);
-                        m.locals[v] = aaddr;
+                        uint laddr = (uint)(m.callstack.Peek().Item2 + v * 4);
+                        m.Memory.Write(laddr, aaddr);
+                        //m.locals[v] = aaddr;
                         if (m.DEBUG)
                         {
                             if (m.metadata.localData.ContainsKey(v))
@@ -232,7 +236,9 @@ namespace nvm.v2
                     Name = "FREELOC", BYTECODE = 0x09,
                     Run = (m) => {
                         int v = m.Memory.ReadInt(m.IP); m.IP += 4;
-                        uint addr = m.locals[v];
+                        //uint addr = m.locals[v];
+                        uint laddr = (uint)(m.callstack.Peek().Item2 + v * 4);
+                        uint addr = m.Memory.ReadUInt(laddr);
                         byte t = m.Memory.Read(addr);
                         if(t == ValueTypeCodes.BYTE)
                         {
@@ -242,7 +248,8 @@ namespace nvm.v2
                         {
                             m.Free(addr, 5);
                         }
-                        m.locals[v] = 0;
+                        //m.locals[v] = 0;
+                        m.Memory.Write(laddr, 0);
                         if (m.DEBUG)
                         {
                             if (m.metadata.localData.ContainsKey(v))
@@ -261,7 +268,9 @@ namespace nvm.v2
                     Name = "LDLOC", BYTECODE = 0x0a,
                     Run = (m) => {
                         int l = m.Memory.ReadInt(m.IP); m.IP += 4;
-                        uint addr = m.locals[l];
+                        //uint addr = m.locals[l];
+                        uint laddr = (uint)(m.callstack.Peek().Item2 + l * 4);
+                        uint addr = m.Memory.ReadUInt(laddr);
                         byte t = m.Memory.Read(addr);
                         if(t == ValueTypeCodes.BYTE)
                         {
@@ -300,7 +309,9 @@ namespace nvm.v2
                     Name = "LDPTR", BYTECODE = 0x0b,
                     Run = (m) => {
                         int l = m.Memory.ReadInt(m.IP); m.IP += 4;
-                        uint addr = m.locals[l];
+                        //uint addr = m.locals[l];
+                        uint laddr = (uint)(m.callstack.Peek().Item2 + l * 4);
+                        uint addr = m.Memory.ReadUInt(laddr);
                         m.stack.Push(addr);
                         if (m.DEBUG)
                         {
@@ -320,7 +331,9 @@ namespace nvm.v2
                     Run = (m) => {
                         int l = m.Memory.ReadInt(m.IP); m.IP += 4;
                         uint addr = (uint)m.stack.Pop();
-                        m.locals[l] = addr;
+                        //m.locals[l] = addr;
+                        uint laddr = (uint)(m.callstack.Peek().Item2 + l * 4);
+                        m.Memory.Write(laddr,addr);
                         if (m.DEBUG)
                         {
                             if (m.metadata.localData.ContainsKey(l))
@@ -669,7 +682,7 @@ namespace nvm.v2
                     Run = (m) => {
                         if(m.callstack.Count > 0)
                         {
-                            Tuple<uint, int> c = m.callstack.Pop();
+                            Tuple<uint, uint> c = m.callstack.Pop();
                             m.IP = c.Item1;
                         }
                         if (m.DEBUG)
@@ -892,7 +905,7 @@ namespace nvm.v2
                             }
                             if (addr != 0)
                             {
-                                m.callstack.Push(new Tuple<uint, int>(m.IP, -1));
+                                m.callstack.Push(new Tuple<uint, uint>(m.IP, 0u));
                                 m.IP = addr;
                             }
                             else
