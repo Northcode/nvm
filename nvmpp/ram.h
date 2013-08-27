@@ -5,11 +5,11 @@
 using namespace std;
 
 //DEFINE VARIABLE TYPE CODES
-const char type_NULL = 0;
-const char type_BYTE = 1;
-const char type_INT = 3;
-const char type_UINT = 4;
-const char type_STRING = 7;
+#define type_NULL 0x00
+#define type_BYTE 0x01
+#define type_INT 0x03
+#define type_UINT 0x04
+#define type_STRING 0x07
 
 class block
 {
@@ -123,6 +123,8 @@ public:
 		delete heap;
 	}
 
+	//------------------- Position operations -------------------
+
 	void setpos(unsigned int value) {
 		pos = value;
 	}
@@ -225,6 +227,18 @@ public:
 	void load_program(char* program,int ProgramSize) {
 		for(int i = 0; i < ProgramSize; i++) {
 			data[i] = program[i];
+		}
+	}
+
+	void dmp_ram(bool csv,int linecout) {
+		for(int i = 0; i < size; i++) {
+			cout << data[i];
+			if(csv) {
+				cout << ",";
+			}
+			if(i % linecout == 0) {
+				cout << endl;
+			}
 		}
 	}
 	
