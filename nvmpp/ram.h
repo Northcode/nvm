@@ -1,6 +1,6 @@
-#include <iostream>
-
 #pragma once
+
+#include <iostream>
 
 using namespace std;
 
@@ -19,6 +19,13 @@ public:
 	bool free;
 	block* next;
 	block* prev;
+	
+	block() {}
+	
+	~block() {
+		delete next;
+		delete prev;
+	}
 
 	block* getNextFree(unsigned int Size) {
 		if(size > Size && free) {
@@ -71,22 +78,32 @@ class ram
 	unsigned int size;
 	unsigned int pos;
 	block* heap;
+	//locals
 	unsigned int localsPointer;
+	//stack
 	unsigned int stackStart;
 	unsigned int stackPointer;
 	unsigned int stackSize;
+	//callstack
+	unsigned int callStackStart;
+	unsigned int callStackPointer;
+	unsigned int callStackSize;
+	//object-heap
 	unsigned int heapPointer;
 
 	unsigned int savedpos;
-	
+
 public:
-	ram(unsigned int ProgramSize, unsigned int LocalsSize, unsigned int StackSize, unsigned int HeapSize) {
+	ram(unsigned int ProgramSize, unsigned int LocalsSize,unsigned int CallStackSize, unsigned int StackSize, unsigned int HeapSize) {
 		//Load memory
 		localsPointer = ProgramSize + 2;
 		stackStart = localsPointer + LocalsSize * 4 + 2;
 		stackSize = StackSize;
 		stackPointer = stackStart + stackSize;
-		heapPointer = stackPointer + 2;
+		callStackStart = stackPointer + 1;
+		callStackSize = CallStackSize * 4;
+		callStackPointer = callStackStart + callStackSize;
+		heapPointer = callStackPointer + 2;
 		size = heapPointer + HeapSize;
 
 		//Allocate ram data
@@ -101,14 +118,19 @@ public:
 		heap->next = nullptr;
 	}
 	
+	~ram() {
+		delete [] data;
+		delete heap;
+	}
+
 	void setpos(unsigned int value) {
 		pos = value;
 	}
-	
+
 	unsigned int getpos() {
 		return pos;
 	}
-	
+
 	void savepos() {
 		savedpos = pos;
 	}
@@ -122,10 +144,11 @@ public:
 	void write(char value) {
 		if(pos < size) {
 			data[pos] = value;
+			//cout << "wrote: " << value << endl;
 			pos++;
 		}
 	}
-	
+
 	void writeInt(int value) {
 		char* charray = (char*)(&value);
 		write(charray[0]);
@@ -134,19 +157,33 @@ public:
 		write(charray[3]);
 	}
 	
+	void writeUInt(unsigned int u) {
+		char* charray = (char*)(&u);
+		write(charray[0]);
+		write(charray[1]);
+		write(charray[2]);
+		write(charray[3]);
+	}
+
 	void writeString(const char* string) {
-		while(string[pos] != '\0') {
-			write(string[pos]);
+		//compute string length
+		int l = 0;
+		for(l = 0; string[l] != '\0'; l++);
+		l++;
+		
+		for(int i = 0; i < l; i++) {
+			write(string[i]);
 		}
 		write('\0');
 	}
-	
+
 	char read() {
 		char ch = data[pos];
+		//cout << "read: " << ch << endl;
 		pos++;
 		return ch;
 	}
-	
+
 	int readInt() {
 		char ca = read();
 		char cb = read();
@@ -157,6 +194,16 @@ public:
 		return *intptr;
 	}
 	
+	unsigned int readUInt() {
+		char ca = read();
+		char cb = read();
+		char cc = read();
+		char cd = read();
+		char charArray[] = { ca, cb, cc, cd };
+		unsigned int* uintptr = (unsigned int*)charArray;
+		return *uintptr;
+	}
+
 	char* readString() {
 		unsigned int startpos = getpos();
 		int charCount = 0;
@@ -164,6 +211,7 @@ public:
 			charCount++;
 		}
 		charCount++;
+		
 		setpos(startpos);
 		char* string = new char[charCount];
 		for(int i = 0; i < charCount; i++) {
@@ -172,6 +220,12 @@ public:
 		string[charCount - 1] = '\0';
 		pos += charCount;
 		return string;
+	}
+
+	void load_program(char* program,int ProgramSize) {
+		for(int i = 0; i < ProgramSize; i++) {
+			data[i] = program[i];
+		}
 	}
 	
 	// ------------------- Memory allocation operations -------------------
@@ -200,7 +254,7 @@ public:
 			return region->address;
 		}
 		else {
-			throw exception("Cannot allocate space for memory.");
+			cout << "Cannot allocate space for memory." << endl;
 		}
 	}
 
@@ -279,7 +333,7 @@ public:
 		}
 	}
 
-	void pushInt(int i) {
+	void push_int(int i) {
 		if(stackPointer - 5 > stackStart) {
 			stackPointer -= 5;
 			savepos();
@@ -289,13 +343,24 @@ public:
 			restorepos();
 		}
 	}
+	
+	void push_uint(unsigned int i) {
+		if(stackPointer - 5 > stackStart) {
+			stackPointer -= 5;
+			savepos();
+			setpos(stackPointer);
+			write(type_UINT);
+			writeUInt(i);
+			restorepos();
+		}
+	}
 
-	void pushString(char* string) {
+	void push_string(const char* string) {
 		//compute string length
 		int l = 0;
 		for(l = 0; string[l] != '\0'; l++);
 		l++;
-
+		
 		if(stackPointer - (l + 1) > stackStart) {
 			stackPointer -= (l + 1);
 			savepos();
@@ -306,7 +371,7 @@ public:
 		}
 	}
 
-	char peekType() {
+	char peek_type() {
 		savepos();
 		setpos(stackPointer);
 		char ch = read();
@@ -324,7 +389,7 @@ public:
 		return value;
 	}
 
-	int popInt() {
+	int pop_int() {
 		savepos();
 		setpos(stackPointer);
 		char type = read();
@@ -333,8 +398,18 @@ public:
 		restorepos();
 		return value;
 	}
+	
+	unsigned int pop_uint() {
+		savepos();
+		setpos(stackPointer);
+		char type = read();
+		unsigned int value = readUInt();
+		stackPointer = getpos();
+		restorepos();
+		return value;
+	}
 
-	char* popString() {
+	char* pop_string() {
 		savepos();
 		setpos(stackPointer);
 		char type = read();
@@ -344,7 +419,7 @@ public:
 		return value;
 	}
 
-	void popNull() {
+	void pop_null() {
 		savepos();
 		setpos(stackPointer);
 		char type = read();
@@ -358,4 +433,36 @@ public:
 		stackPointer = getpos();
 		restorepos();
 	}
+	
+	//------------------- Call Stack Stuff -------------------
+	
+	void push_callstack(unsigned int addr) {
+		if(callStackPointer - 4 > callStackStart) {
+			savepos();
+			callStackPointer -= 4;
+			setpos(callStackPointer);
+			writeUInt(addr);
+			restorepos();
+		}
+	}
+	
+	unsigned int pop_callstack() {
+		savepos();
+		setpos(callStackPointer);
+		unsigned int addr = readUInt();
+		callStackPointer = getpos();
+		restorepos();
+		return addr;
+	}
 };
+
+/*
+int main() {
+	ram* r = new ram(16,4,128,512);
+	const char* str = "hello world!\0";
+	r->pushString(str);
+	cout << r->popString() << endl;
+	getchar();
+	return 0;
+}
+*/
