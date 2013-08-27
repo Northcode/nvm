@@ -67,9 +67,9 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Object.h" />
+    <ClInclude Include="instructions.h" />
+    <ClInclude Include="opcodes.h" />
     <ClInclude Include="ram.h" />
-    <ClInclude Include="Stack.h" />
     <ClInclude Include="vm.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

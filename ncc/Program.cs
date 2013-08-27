@@ -14,7 +14,7 @@ namespace ncc
     {
         static void Main(string[] args)
         {
-            string c = File.ReadAllText("testlang.txt");
+            string c = File.ReadAllText("tocpp.txt");
 
             Scanner s = new Scanner(c);
             s.Scan();
@@ -31,19 +31,27 @@ namespace ncc
 
             Console.WriteLine("----------------- ASM CODE -------------------------");
             Console.Write(ILcode);
-            Console.ReadKey();
 
             CompilerMeta cm = new CompilerMeta();
             cm.ProgramName = "Test";
             cm.localMeta = VarnameLocalizer.GetLocalMeta();
 
-            Console.WriteLine("--------------- OUTPUT --------------");
-            
+            Console.WriteLine("--------------- BYTES ---------------");
+
             VM.InitOpcodes();
             Assembler a = new Assembler();
             a.CompilerMeta = cm;
             a.code = ILcode;
             NcAssembly code = a.Assemble();
+
+            foreach (byte b in code.code)
+            {
+                Console.Write("0x" + b.ToString("X").PadLeft(2,'0') + ",");
+            }
+
+            Console.ReadKey();
+
+            Console.WriteLine("--------------- OUTPUT --------------");
 
             VM v = new VM(code);
             v.metadata = a.programMeta;

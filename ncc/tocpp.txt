@@ -1,0 +1,7 @@
+﻿main()
+	test()
+end
+
+test()
+	
+end

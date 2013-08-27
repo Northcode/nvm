@@ -26,7 +26,7 @@ public:
 
 };
 
-#include "instructions.cpp"
+#include "instructions.h"
 
 void vm::run() {
 	RN = true;

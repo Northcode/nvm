@@ -72,6 +72,16 @@ public:
 	}
 };
 
+class callstack_unit
+{
+public:
+	callstack_unit();
+	~callstack_unit();
+
+	unsigned int addr;
+	unsigned int offset;
+};
+
 class ram
 {
 	char* data;
@@ -224,15 +234,19 @@ public:
 		return string;
 	}
 
-	void load_program(char* program,int ProgramSize) {
-		for(int i = 0; i < ProgramSize; i++) {
+	void load_program(char* program) {
+		for(int i = 0; program[i] != EOF; i++) {
 			data[i] = program[i];
 		}
 	}
 
-	void dmp_ram(bool csv,int linecout) {
+	void dmp_ram(bool csv,int linecout,bool cast) {
 		for(int i = 0; i < size; i++) {
-			cout << data[i];
+			if(cast) {
+				cout << (unsigned int)((char)data[i]);
+			} else {
+				cout << data[i];
+			}
 			if(csv) {
 				cout << ",";
 			}
@@ -450,12 +464,13 @@ public:
 	
 	//------------------- Call Stack Stuff -------------------
 	
-	void push_callstack(unsigned int addr) {
-		if(callStackPointer - 4 > callStackStart) {
+	void push_callstack(unsigned int addr,unsigned int offset) {
+		if(callStackPointer - 8 > callStackStart) {
 			savepos();
-			callStackPointer -= 4;
+			callStackPointer -= 8;
 			setpos(callStackPointer);
 			writeUInt(addr);
+			writeUInt(offset);
 			restorepos();
 		}
 	}
@@ -464,6 +479,7 @@ public:
 		savepos();
 		setpos(callStackPointer);
 		unsigned int addr = readUInt();
+		unsigned int offset = readUInt();
 		callStackPointer = getpos();
 		restorepos();
 		return addr;
