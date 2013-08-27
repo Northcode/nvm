@@ -1,9 +1,9 @@
-﻿Build started 27/08/2013 20:18:55.
+﻿Build started 27/08/2013 23:03:09.
      1>Project "E:\Desktop\nvm\nvmpp\nvmpp.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 11.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt main.cpp
          main.cpp
-     1>e:\desktop\nvm\nvmpp\ram.h(234): warning C4018: '<' : signed/unsigned mismatch
+     1>e:\desktop\nvm\nvmpp\ram.h(246): warning C4018: '<' : signed/unsigned mismatch
      1>e:\desktop\nvm\nvmpp\opcodes.h(42): warning C4005: 'EOF' : macro redefinition
                  c:\program files (x86)\microsoft visual studio 11.0\vc\include\stdio.h(52) : see previous definition of 'EOF'
      1>e:\desktop\nvm\nvmpp\main.cpp(9): warning C4309: 'initializing' : truncation of constant value
@@ -14,4 +14,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:00.83
+Time Elapsed 00:00:00.81

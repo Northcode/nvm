@@ -41,6 +41,9 @@ void vm::run() {
 			case CALL:
 				i_call(this);
 				break;
+			case LOCALHEAP:
+				i_localheap(this);
+				break;
 			case END:
 				i_end(this);
 				break;

@@ -89,7 +89,8 @@ class ram
 	unsigned int pos;
 	block* heap;
 	//locals
-	unsigned int localsPointer;
+	unsigned int frameStackStart;
+	unsigned int frameStackPointer;
 	//stack
 	unsigned int stackStart;
 	unsigned int stackPointer;
@@ -104,10 +105,11 @@ class ram
 	unsigned int savedpos;
 
 public:
-	ram(unsigned int ProgramSize, unsigned int LocalsSize,unsigned int CallStackSize, unsigned int StackSize, unsigned int HeapSize) {
+	ram(unsigned int ProgramSize, unsigned int framestackSize,unsigned int CallStackSize, unsigned int StackSize, unsigned int HeapSize) {
 		//Load memory
-		localsPointer = ProgramSize + 2;
-		stackStart = localsPointer + LocalsSize * 4 + 2;
+		frameStackStart = ProgramSize + 2;
+		frameStackPointer = frameStackStart + framestackSize;
+		stackStart = frameStackPointer + 2;
 		stackSize = StackSize;
 		stackPointer = stackStart + stackSize;
 		callStackStart = stackPointer + 1;
@@ -462,15 +464,46 @@ public:
 		restorepos();
 	}
 	
+	//------------------- frameStack Stuff -------------------
+
+	void push_stackframe(int size) {
+		if(frameStackPointer - size - 4 > frameStackStart) {
+			savepos();
+			frameStackPointer -= size - 4;
+			setpos(frameStackPointer);
+			writeInt(size);
+			restorepos();
+		}
+	}
+
+	int peek_stackframe_size() {
+		savepos();
+		setpos(get_stackFramePointer());
+		int size = readInt();
+		restorepos();
+		return size;
+	}
+
+	unsigned int get_stackFramePointer() {
+		return frameStackPointer;
+	}
+
+	void pop_stackframe() {
+		savepos();
+		setpos(get_stackFramePointer());
+		int size = readInt();
+		frameStackPointer += size + 4;
+		restorepos();
+	}
+
 	//------------------- Call Stack Stuff -------------------
 	
-	void push_callstack(unsigned int addr,unsigned int offset) {
-		if(callStackPointer - 8 > callStackStart) {
+	void push_callstack(unsigned int addr) {
+		if(callStackPointer - 4 > callStackStart) {
 			savepos();
-			callStackPointer -= 8;
+			callStackPointer -= 4;
 			setpos(callStackPointer);
 			writeUInt(addr);
-			writeUInt(offset);
 			restorepos();
 		}
 	}
@@ -479,7 +512,6 @@ public:
 		savepos();
 		setpos(callStackPointer);
 		unsigned int addr = readUInt();
-		unsigned int offset = readUInt();
 		callStackPointer = getpos();
 		restorepos();
 		return addr;

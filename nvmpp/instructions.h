@@ -17,14 +17,13 @@ void i_end(vm* machine) {
 void i_call(vm* machine) {
 	unsigned int addr = machine->memory->readUInt();
 	unsigned int retaddr = machine->memory->getpos();
-	machine->memory->push_callstack(retaddr,0xffffffff);
+	machine->memory->push_callstack(retaddr);
 	machine->IP = addr;
 }
 
 void i_localheap(vm* machine) {
 	unsigned int size = machine->memory->readUInt();
-	unsigned int addr = machine->memory->MAlloc(size);
-
+	machine->memory->push_stackframe(size);
 }
 
 void i_ret(vm* machine) {
