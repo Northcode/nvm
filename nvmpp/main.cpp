@@ -1,18 +1,15 @@
 #include <iostream>
-#include <deque>
+#include "ram.h"
 #include "vm.h"
 
 using namespace std;
 
-int main()
-{
-    char prg[] = { PUSH, INT, 5, 0, 0, 0, END };
-    int s = arraylen(prg);
-    int* sp = &s;
-    VM* v = new VM(prg,sp);
-    v->Run();
-    v->dmpstack();
-    delete sp;
-    delete v;
-    return 0;
+int main() {
+	ram* mem = new ram(32,4,16,128,1724);
+	char program[] = { JMP, 10, 0, 0, 0, 0, 0, 0, 0, 0, END };
+	vm* v = new vm(mem);
+	v->memory->dmp_ram(false,50);
+	delete v;
+	getchar();
+	return 0;
 }
