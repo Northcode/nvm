@@ -1,5 +1,6 @@
 ﻿main()
 	test()
+	asm "END"
 end
 
 test()

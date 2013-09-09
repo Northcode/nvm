@@ -39,4 +39,4 @@
 #define DEBUG 0x24
 #define CALLS 0x25
 #define JMPS 0x26
-#define EOF 0xff
+#define vmEOF 0xff

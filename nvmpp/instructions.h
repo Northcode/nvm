@@ -23,7 +23,8 @@ void i_call(vm* machine) {
 
 void i_localheap(vm* machine) {
 	unsigned int size = machine->memory->readUInt();
-	machine->memory->push_stackframe(size);
+	machine->memory->set_callstack_size(size * 4);
+	machine->IP = machine->memory->getpos();
 }
 
 void i_ret(vm* machine) {
@@ -75,4 +76,12 @@ void i_pop(vm* machine) {
 	machine->memory->pop_null();
 }
 
+//---------------------- LOCALS -------------------------
 
+void i_dmpstack(vm* machine) {
+	cout << endl << "{[ERROR: DMPSTACK not impemented!]}" << endl;
+}
+
+void i_stloc(vm* machine) {
+	unsigned int index;
+}

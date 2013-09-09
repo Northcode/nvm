@@ -47,6 +47,9 @@ void vm::run() {
 			case END:
 				i_end(this);
 				break;
+			case RET:
+				i_ret(this);
+				break;
 		}
 	}
 }

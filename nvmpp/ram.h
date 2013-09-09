@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include "opcodes.h"
 
 using namespace std;
 
@@ -33,12 +34,12 @@ public:
 		}
 		else
 		{
-			if(next != nullptr) {
+			if(next != 0) {
 				return next->getNextFree(Size);
 			}
 			else
 			{
-				return nullptr;
+				return 0;
 			}
 		}
 	}
@@ -58,7 +59,7 @@ public:
 			delete next;
 			next = tmp;
 		} else {
-			if(prev != nullptr) {
+			if(prev != 0) {
 				prev->merge();
 			}
 		}
@@ -66,20 +67,10 @@ public:
 
 	void dumpTree() {
 		cout << "BLOCK: " << address << " , " << size << " is free: " << free << endl;
-		if(next != nullptr) {
+		if(next != 0) {
 			next->dumpTree();
 		}
 	}
-};
-
-class callstack_unit
-{
-public:
-	callstack_unit();
-	~callstack_unit();
-
-	unsigned int addr;
-	unsigned int offset;
 };
 
 class ram
@@ -88,35 +79,30 @@ class ram
 	unsigned int size;
 	unsigned int pos;
 	block* heap;
-	//locals
-	unsigned int frameStackStart;
-	unsigned int frameStackPointer;
 	//stack
 	unsigned int stackStart;
 	unsigned int stackPointer;
 	unsigned int stackSize;
 	//callstack
-	unsigned int callStackStart;
 	unsigned int callStackPointer;
 	unsigned int callStackSize;
 	//object-heap
 	unsigned int heapPointer;
+	unsigned int heapStart;
 
 	unsigned int savedpos;
 
 public:
-	ram(unsigned int ProgramSize, unsigned int framestackSize,unsigned int CallStackSize, unsigned int StackSize, unsigned int HeapSize) {
+	ram(unsigned int ProgramSize, unsigned int CallStackSize, unsigned int StackSize, unsigned int HeapSize) {
 		//Load memory
-		frameStackStart = ProgramSize + 2;
-		frameStackPointer = frameStackStart + framestackSize;
-		stackStart = frameStackPointer + 2;
+		stackStart = ProgramSize + 2;
 		stackSize = StackSize;
 		stackPointer = stackStart + stackSize;
-		callStackStart = stackPointer + 1;
-		callStackSize = CallStackSize * 4;
-		callStackPointer = callStackStart + callStackSize;
-		heapPointer = callStackPointer + 2;
-		size = heapPointer + HeapSize;
+		callStackPointer = stackPointer + 1;
+		callStackSize = CallStackSize;
+		heapStart = callStackPointer + CallStackSize + 2;
+		heapPointer = heapStart;
+		size = heapStart + HeapSize;
 
 		//Allocate ram data
 		data = new char[size];
@@ -127,7 +113,7 @@ public:
 		heap->address = heapPointer;
 		heap->size = size - heapPointer;
 		heap->free = true;
-		heap->next = nullptr;
+		heap->next = 0;
 	}
 	
 	~ram() {
@@ -151,6 +137,10 @@ public:
 
 	void restorepos() {
 		pos = savedpos;
+	}
+
+	void skip(unsigned int size) {
+		pos += size;
 	}
 
 	//------------------- Memory Read/Write operations -------------------
@@ -237,7 +227,7 @@ public:
 	}
 
 	void load_program(char* program) {
-		for(int i = 0; program[i] != EOF; i++) {
+		for(int i = 0; program[i] != (char)vmEOF; i++) {
 			data[i] = program[i];
 		}
 	}
@@ -261,17 +251,17 @@ public:
 	// ------------------- Memory allocation operations -------------------
 
 	unsigned int MAlloc(unsigned int allocsize) {
-		if(heap == nullptr) {
+		if(heap == 0) {
 			heap = new block();
 			heap->address = heapPointer;
 			heap->size = size - heapPointer;
 			heap->free = true;
-			heap->next = nullptr;
+			heap->next = 0;
 		}
 
 		block* region = heap->getNextFree(allocsize);
 
-		if(region != nullptr) {
+		if(region != 0) {
 			block* newregion = new block();
 			newregion->address = region->address + allocsize;
 			newregion->size = region->size - allocsize;
@@ -457,64 +447,63 @@ public:
 			read();
 		} else if(type == type_INT) {
 			readInt();
+		} else if(type == type_INT) {
+			readUInt();
 		} else if(type == type_STRING) {
 			readString();
 		}
 		stackPointer = getpos();
 		restorepos();
 	}
-	
-	//------------------- frameStack Stuff -------------------
-
-	void push_stackframe(int size) {
-		if(frameStackPointer - size - 4 > frameStackStart) {
-			savepos();
-			frameStackPointer -= size - 4;
-			setpos(frameStackPointer);
-			writeInt(size);
-			restorepos();
-		}
-	}
-
-	int peek_stackframe_size() {
-		savepos();
-		setpos(get_stackFramePointer());
-		int size = readInt();
-		restorepos();
-		return size;
-	}
-
-	unsigned int get_stackFramePointer() {
-		return frameStackPointer;
-	}
-
-	void pop_stackframe() {
-		savepos();
-		setpos(get_stackFramePointer());
-		int size = readInt();
-		frameStackPointer += size + 4;
-		restorepos();
-	}
 
 	//------------------- Call Stack Stuff -------------------
 	
 	void push_callstack(unsigned int addr) {
-		if(callStackPointer - 4 > callStackStart) {
+		if(callStackPointer < heapStart) {
 			savepos();
-			callStackPointer -= 4;
 			setpos(callStackPointer);
 			writeUInt(addr);
+			callStackPointer = getpos();
+			restorepos();
+		}
+	}
+
+	void set_callstack_size(unsigned int size) {
+		if(callStackPointer + size + 4 < heapStart) {
+			savepos();
+			setpos(callStackPointer);
+			skip(size);
+			writeUInt(size + 4);
+			callStackPointer = getpos();
 			restorepos();
 		}
 	}
 	
 	unsigned int pop_callstack() {
 		savepos();
+		setpos(callStackPointer - 4);
+		unsigned int size = readUInt();
+		callStackPointer -= size + 4;
 		setpos(callStackPointer);
 		unsigned int addr = readUInt();
-		callStackPointer = getpos();
 		restorepos();
 		return addr;
+	}
+
+	void stloc(unsigned int index, unsigned int addr) {
+		savepos();
+		unsigned int saddr = callStackPointer - index * 4 - 4;
+		setpos(saddr);
+		writeUInt(addr);
+		restorepos();
+	}
+
+	unsigned int ldloc(unsigned int index) {
+		savepos();
+		unsigned int saddr = callStackPointer - index * 4 - 4;
+		setpos(saddr);
+		unsigned int raddr = readUInt();
+		restorepos();
 	}
 };
 
