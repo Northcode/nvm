@@ -70,6 +70,7 @@ void i_push(vm* machine) {
 			i_push_string(machine);
 			break;
 	}
+	machine->IP = machine->memory->getpos();
 }
 
 void i_pop(vm* machine) {
@@ -85,24 +86,25 @@ void i_dmpstack(vm* machine) {
 void i_stloc(vm* machine) {
 	unsigned int index = machine->memory->readUInt();
 	char t = machine->memory->peek_type();
-	switch (t)
+	if(t == type_BYTE) 
 	{
-		case type_BYTE:
-			char v = machine->memory->pop();
-			unsigned int addr = machine->memory->Alloc(v);
-			machine->memory->stloc(index,addr);
-		break;
-		case type_INT:
-			int v = machine->memory->pop_int();
-			unsigned int addr = machine->memory->Alloc(v);
-			machine->memory->stloc(index,addr);
-		break;
-		case type_STRING:
-			char* v = machine->memory->pop_int();
-			unsigned int addr = machine->memory->Alloc(v);
-			machine->memory->stloc(index,addr);
-		break;
+		char v = machine->memory->pop();
+		unsigned int addr = machine->memory->Alloc(v);
+		machine->memory->stloc(index,addr);
 	}
+	else if(t == type_INT) 
+	{
+		int v = machine->memory->pop_int();
+		unsigned int addr = machine->memory->Alloc(v);
+		machine->memory->stloc(index,addr);
+	}
+	else if(t == type_STRING)
+	{
+		char* v = machine->memory->pop_string();
+		unsigned int addr = machine->memory->Alloc(v);
+		machine->memory->stloc(index,addr);
+	}
+	machine->IP = machine->memory->getpos();
 }
 
 void i_ldloc(vm* machine) {

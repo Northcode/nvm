@@ -291,6 +291,8 @@ public:
 		write(type_BYTE);
 		write(ch);
 		restorepos();
+
+		return memoryAddress;
 	}
 
 	unsigned int Alloc(int i) {
@@ -306,6 +308,8 @@ public:
 		write(type_STRING);
 		writeInt(i);
 		restorepos();
+
+		return memoryAddress;
 	}
 
 	unsigned int Alloc(char* s) {

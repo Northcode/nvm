@@ -1,4 +1,6 @@
 ﻿main()
+	a = 5
+	b = "hello"
 	test()
 	asm "END"
 end
