@@ -83,5 +83,29 @@ void i_dmpstack(vm* machine) {
 }
 
 void i_stloc(vm* machine) {
-	unsigned int index;
+	unsigned int index = machine->memory->readUInt();
+	char t = machine->memory->peek_type();
+	switch (t)
+	{
+		case type_BYTE:
+			char v = machine->memory->pop();
+			unsigned int addr = machine->memory->Alloc(v);
+			machine->memory->stloc(index,addr);
+		break;
+		case type_INT:
+			int v = machine->memory->pop_int();
+			unsigned int addr = machine->memory->Alloc(v);
+			machine->memory->stloc(index,addr);
+		break;
+		case type_STRING:
+			char* v = machine->memory->pop_int();
+			unsigned int addr = machine->memory->Alloc(v);
+			machine->memory->stloc(index,addr);
+		break;
+	}
+}
+
+void i_ldloc(vm* machine) {
+	unsigned int index = machine->memory->readUInt();
+	
 }
