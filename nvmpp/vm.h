@@ -50,6 +50,9 @@ void vm::run() {
 			case RET:
 				i_ret(this);
 				break;
+			case STLOC:
+				i_stloc(this);
+				break;
 		}
 	}
 }
