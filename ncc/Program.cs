@@ -14,7 +14,15 @@ namespace ncc
     {
         static void Main(string[] args)
         {
-            string c = File.ReadAllText("tocpp.txt");
+            string c = "";
+            if (args.Length > 0)
+            {
+                c = File.ReadAllText(args[0]);
+            }
+            else
+            {
+                c = File.ReadAllText("tocpp.txt");
+            }
 
             Scanner s = new Scanner(c);
             s.Scan();
