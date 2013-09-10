@@ -222,7 +222,6 @@ public:
 			string[i] = read();
 		}
 		string[charCount - 1] = '\0';
-		pos += charCount;
 		return string;
 	}
 
@@ -275,6 +274,7 @@ public:
 		}
 		else {
 			cout << "Cannot allocate space for memory." << endl;
+			return 0x0;
 		}
 	}
 
@@ -508,6 +508,11 @@ public:
 		setpos(saddr);
 		unsigned int raddr = readUInt();
 		restorepos();
+		return raddr;
+	}
+
+	void freeloc(unsigned int index) {
+
 	}
 };
 
