@@ -109,5 +109,32 @@ void i_stloc(vm* machine) {
 
 void i_ldloc(vm* machine) {
 	unsigned int index = machine->memory->readUInt();
-	
+	unsigned int addr = machine->memory->ldloc(index);
+	unsigned int bpos = machine->memory->getpos();
+	machine->memory->setpos(addr);
+	char type = machine->memory->read();
+	if(type == type_BYTE) {
+		char val = machine->memory->read();
+		machine->memory->push(val);
+	}
+	else if(type == type_INT) {
+		int val = machine->memory->readInt();
+		machine->memory->push_int(val);
+	}
+	else if(type == type_UINT) {
+		unsigned int val = machine->memory->readUInt();
+		machine->memory->push_uint(val);
+	}
+	else if (type == type_STRING) {
+		char* val = machine->memory->readString();
+		machine->memory->push_string(val);
+	}
+	machine->memory->setpos(bpos);
+}
+
+
+void i_freeloc(vm* machine) {
+	unsigned int index = machine->memory->readUInt();
+	machine->IP = machine->memory->getpos();
+	machine->memory->freeloc(index);
 }
