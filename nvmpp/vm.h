@@ -21,7 +21,6 @@ public:
 	}
 	
 	//Run methods
-
 	void run();
 
 };
@@ -55,6 +54,12 @@ void vm::run() {
 				break;
 			case STLOC:
 				i_stloc(this);
+				break;
+			case LDLOC:
+				i_ldloc(this);
+				break;
+			case FREELOC:
+				i_freeloc(this);
 				break;
 		}
 	}

@@ -305,7 +305,7 @@ public:
 		//Store data
 		savepos();
 		setpos(memoryAddress);
-		write(type_STRING);
+		write(type_INT);
 		writeInt(i);
 		restorepos();
 
@@ -326,7 +326,7 @@ public:
 		//Store data
 		savepos();
 		setpos(memoryAddress);
-		write(type_BYTE);
+		write(type_STRING);
 		writeString(s);
 		restorepos();
 

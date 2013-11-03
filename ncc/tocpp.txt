@@ -1,10 +1,10 @@
 ﻿main()
 	a = 5
 	b = "hello"
-	test()
+	test(b)
 	asm "END"
 end
 
-test()
-	
+test(t)
+	t
 end
