@@ -1,11 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2012 for Windows Desktop
+# Visual Studio Express 2013 for Windows Desktop
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nvm", "nvm\nvm.csproj", "{23D9930C-6DBB-4C27-A97B-D14BE6EF3B9F}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "nvmpp", "nvmpp\nvmpp.vcxproj", "{7A75A3C9-7148-49D8-BA8C-2D6F7B5E8F1B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ncc", "ncc\ncc.csproj", "{2E20F0C9-C9C1-4D29-A023-AD10F2A4F199}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nvm2", "nvm2\nvm2.csproj", "{A4348756-561F-4BD7-951A-DC61149E308C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +51,16 @@ Global
 		{2E20F0C9-C9C1-4D29-A023-AD10F2A4F199}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2E20F0C9-C9C1-4D29-A023-AD10F2A4F199}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2E20F0C9-C9C1-4D29-A023-AD10F2A4F199}.Release|Win32.ActiveCfg = Release|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A4348756-561F-4BD7-951A-DC61149E308C}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

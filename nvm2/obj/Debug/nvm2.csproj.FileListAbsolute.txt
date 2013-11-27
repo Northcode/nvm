@@ -1,0 +1,6 @@
+E:\Desktop\nvm\nvm2\bin\Debug\nvm2.exe.config
+E:\Desktop\nvm\nvm2\bin\Debug\nvm2.exe
+E:\Desktop\nvm\nvm2\bin\Debug\nvm2.pdb
+E:\Desktop\nvm\nvm2\obj\Debug\nvm2.csprojResolveAssemblyReference.cache
+E:\Desktop\nvm\nvm2\obj\Debug\nvm2.exe
+E:\Desktop\nvm\nvm2\obj\Debug\nvm2.pdb

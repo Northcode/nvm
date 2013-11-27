@@ -130,6 +130,7 @@ void i_ldloc(vm* machine) {
 		machine->memory->push_string(val);
 	}
 	machine->memory->setpos(bpos);
+	machine->IP = machine->memory->getpos();
 }
 
 
