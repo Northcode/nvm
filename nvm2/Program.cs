@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using nvm2.compiler;
+using nvm2.compiler.ast;
 
 namespace nvm2
 {
@@ -17,8 +18,12 @@ namespace nvm2
             scan.ScanAll();
             foreach (Token t in scan.Tokens)
             {
-                Console.WriteLine(t);
+                Console.WriteLine(t.ToString());
             }
+            Parser parse = new Parser();
+            parse.Tokens = scan.Tokens.ToArray();
+            stmt s = parse.ParseStmt();
+            Console.WriteLine(s);
             Console.ReadKey();
         }
     }

@@ -9,34 +9,119 @@ namespace nvm2.compiler
         public object data;
         public TokenType type;
 
-        public static override bool operator==(Token token,TokenType type)
+        public static bool operator==(Token token,TokenType type)
         {
             return token.type == type;
         }
 
-        public static override bool operator ==(Token token, int value)
+        public static bool operator ==(Token token, int value)
         {
-            return ((int)token.data) == value;
+            if (token.data is int)
+                return ((int)token.data) == value;
+            else
+                return false;
         }
 
-        public static override bool operator ==(Token token, string value)
+        public static bool operator ==(Token token, string value)
         {
-            return ((string)token.data) == value;
+            if (token.data is string)
+                return ((string)token.data) == value;
+            else
+                return false;
         }
 
-        public static override bool operator ==(Token token, float value)
+        public static bool operator ==(Token token, float value)
         {
-            return ((float)token.data) == value;
+            if (token.data is float)
+                return ((float)token.data) == value;
+            else
+                return false;
         }
 
-        public static override bool operator ==(Token token, bool value)
+        public static bool operator ==(Token token, bool value)
         {
-            return ((bool)token.data) == value;
+            if (token.data is bool)
+                return ((bool)token.data) == value;
+            else
+                return false;
         }
 
-        public static override bool operator ==(Token token, char value)
+        public static bool operator ==(Token token, char value)
         {
-            return ((char)token.data) == value;
+            if (token.data is char)
+                return ((char)token.data) == value;
+            else
+                return false;
+        }
+
+        public static bool operator !=(Token token, TokenType type)
+        {
+            return token.type != type;
+        }
+
+        public static bool operator !=(Token token, int value)
+        {
+            if (token.data is int)
+                return ((int)token.data) != value;
+            else
+                return true;
+        }
+
+        public static bool operator !=(Token token, string value)
+        {
+            if (token.data is string)
+                return ((string)token.data) != value;
+            else
+                return true;
+        }
+
+        public static bool operator !=(Token token, float value)
+        {
+            if (token.data is float)
+                return ((float)token.data) != value;
+            else
+                return true;
+        }
+
+        public static bool operator !=(Token token, bool value)
+        {
+            if (token.data is bool)
+                return ((bool)token.data) != value;
+            else
+                return true;
+        }
+
+        public static bool operator !=(Token token, char value)
+        {
+            if (token.data is char)
+                return ((char)token.data) != value;
+            else
+                return true;
+        }
+
+        public static implicit operator int(Token token)
+        {
+            return (int)token.data;
+        }
+
+        public static implicit operator float(Token token)
+        {
+            return (float)token.data;
+        }
+
+        public static implicit operator string(Token token)
+        {
+            return token.data as string;
+        }
+
+        public static implicit operator bool(Token token)
+        {
+            return (bool)token.data;
+        }
+
+        public static implicit operator byte(Token token)
+        {
+            return (byte)token.data;
         }
 
         public override string ToString()

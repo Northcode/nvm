@@ -1,0 +1,31 @@
+﻿ _________________________________________________________________________
+| .__   __.____    ____.___  ___.       ___          _______.___________. |
+| |  \ |  |\   \  /   /|   \/   |      /   \        /       |           | |
+| |   \|  | \   \/   / |  \  /  |     /  ^  \      |   (----`---|  |----` |
+| |  . `  |  \      /  |  |\/|  |    /  /_\  \      \   \       |  |	  |
+| |  |\   |   \    /   |  |  |  |   /  _____  \ .----)   |      |  |	  |
+| |__| \__|    \__/    |__|  |__|  /__/     \__\|_______/       |__|	  |
+|_________________________________________________________________________|
+
+stmt	:=	
+	x	|	expr								//expr
+	x	|	name = expr							//set var
+	x	|	def name(args) stmt					//define function
+		|	name -> expr						//set pointer
+	x	|	stmt[^"end"]*						//list
+		|	class name [: [name]+]* stmt end	//define class
+
+name	:=	word	//variable names
+args	:=	name*
+
+expr	:=	
+	x	|	expr[,expr]*				//list
+	x	|	int							//int		LITERALS
+	x	|	float						//float		   "
+	x	|	string						//string	   "
+	x	|	bool						//bool		   "
+	x	|	byte						//byte		   "
+	x	|	name						//variable
+	x	|	name(expr)					//function call
+	x	|	expr +|-|*|/|%|^ expr		//arithmetic expr
+		|	(args) => stmt				//lambda
