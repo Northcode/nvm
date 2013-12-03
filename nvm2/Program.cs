@@ -12,9 +12,14 @@ namespace nvm2
     {
         static void Main(string[] args)
         {
-            string code = Console.ReadLine();
+            StringBuilder stb = new StringBuilder();
+            string line = "";
+            while ((line = Console.ReadLine()) != "!")
+            {
+                stb.AppendLine(line);
+            }
             Scanner scan = new Scanner();
-            scan.Code = code;
+            scan.Code = stb.ToString();
             scan.ScanAll();
             foreach (Token t in scan.Tokens)
             {
@@ -24,6 +29,9 @@ namespace nvm2
             parse.Tokens = scan.Tokens.ToArray();
             stmt s = parse.ParseStmt();
             Console.WriteLine(s);
+            NILGenerator generator = new NILGenerator(s, "prg.exe");
+            generator.Generate();
+            generator.SaveAssembly();
             Console.ReadKey();
         }
     }

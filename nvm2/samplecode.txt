@@ -9,14 +9,15 @@
 
 stmt	:=	
 	x	|	expr								//expr
+	x	|	var name [as type] [= expr]			//declare var
 	x	|	name = expr							//set var
-	x	|	def name(args) stmt					//define function
-		|	name -> expr						//set pointer
+	x	|	def name(args) [as type] stmt		//define function
 	x	|	stmt[^"end"]*						//list
-		|	class name [: [name]+]* stmt end	//define class
+	x	|	class name [: [name]+]* stmt end	//define class
+	x	|	return expr							//return value
 
 name	:=	word	//variable names
-args	:=	name*
+args	:=	[type name]*
 
 expr	:=	
 	x	|	expr[,expr]*				//list
@@ -28,4 +29,8 @@ expr	:=
 	x	|	name						//variable
 	x	|	name(expr)					//function call
 	x	|	expr +|-|*|/|%|^ expr		//arithmetic expr
-		|	(args) => stmt				//lambda
+	-	|	(args) => stmt				//lambda
+		|	expr as type				//casting
+		|	new type[(expr)]			//create new instance of object pass arguments if constructor needs it
+		|	expr.expr					//access field
+		|	&expr						//get function pointer

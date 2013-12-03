@@ -41,18 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AST.cs" />
-    <Compile Include="parser.cs" />
+    <Compile Include="compiler\AST.cs" />
+    <Compile Include="compiler\ILGenerator.cs" />
+    <Compile Include="compiler\parser.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="scanner.cs" />
-    <Compile Include="vm.cs" />
+    <Compile Include="compiler\scanner.cs" />
+    <Compile Include="Virtual Machine\vm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="samplecode.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Virtual Machine\Instructions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
