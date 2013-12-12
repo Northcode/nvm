@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="compiler\AST.cs" />
+    <Compile Include="compiler\CompilerNodes.cs" />
     <Compile Include="compiler\ILGenerator.cs" />
     <Compile Include="compiler\parser.cs" />
     <Compile Include="Program.cs" />

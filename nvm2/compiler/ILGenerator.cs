@@ -160,7 +160,7 @@ namespace nvm2.compiler
                     {
                         Console.WriteLine("MATCH!");
                     }
-                    ilGenerator.Emit(OpCodes.Call, rmethod);
+                    ilGenerator.Emit(OpCodes.Call, method);
                 }
                 else if (Stmt is class_definition)
                 {
